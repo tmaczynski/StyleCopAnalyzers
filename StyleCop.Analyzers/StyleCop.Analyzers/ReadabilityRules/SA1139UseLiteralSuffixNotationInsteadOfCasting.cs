@@ -21,10 +21,10 @@ namespace StyleCop.Analyzers.ReadabilityRules
     /// A cast is performed instead of using literal of a number. Use "U" suffix to create 32-bit unsigned integer literal, "L" for 64-bit integer literal and "UL" for 64-bit unsigned integer literal.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    internal class SA1139UseLiteralsSuffixNotationInsteadOfCasting : DiagnosticAnalyzer
+    internal class SA1139UseLiteralSuffixNotationInsteadOfCasting : DiagnosticAnalyzer
     {
         /// <summary>
-        /// The ID for diagnostics produced by the <see cref="SA1139UseLiteralsSuffixNotationInsteadOfCasting"/> analyzer.
+        /// The ID for diagnostics produced by the <see cref="SA1139UseLiteralSuffixNotationInsteadOfCasting"/> analyzer.
         /// </summary>
         public const string DiagnosticId = "SA1139";
 

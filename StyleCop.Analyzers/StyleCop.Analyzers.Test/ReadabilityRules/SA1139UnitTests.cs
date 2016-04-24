@@ -131,7 +131,7 @@ class ClassName
 
         protected override IEnumerable<DiagnosticAnalyzer> GetCSharpDiagnosticAnalyzers()
         {
-            yield return new SA1139UseLiteralsSuffixNotationInsteadOfCasting();
+            yield return new SA1139UseLiteralSuffixNotationInsteadOfCasting();
         }
     }
 }
