@@ -64,8 +64,6 @@ namespace StyleCop.Analyzers.ReadabilityRules
                 return;
             }
 
-            // TODO: handle cases when .NET type names are used e.g. Int64
-            // TODO: handle real literals https://msdn.microsoft.com/en-us/library/aa691085(v=vs.71).aspx
             var castingToTypeSyntax = exprNodes[0] as PredefinedTypeSyntax;
             var castedElementTypeSyntax = exprNodes[1] as LiteralExpressionSyntax;
 
