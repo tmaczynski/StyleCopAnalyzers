@@ -145,6 +145,40 @@ class ClassName
             await this.VerifyCSharpFixAsync(testCode, fixedCode, cancellationToken: CancellationToken.None).ConfigureAwait(false);
         }
 
+        [Theory]
+        [InlineData("(ulong)1L", "1UL")]
+        [InlineData("(ulong)1l", "1UL")]
+        [InlineData("(ulong)1U", "1UL")]
+        [InlineData("(ulong)1u", "1UL")]
+        public async Task TestUsingCastsOnLiteralsWithSuffixInMethodProducesDiagnosticAsync(string wrongLiteralWithCast, string correctLiteral)
+        {
+            var testCode = $@"
+class ClassName
+{{
+    public void Method()
+    {{
+        var x = {wrongLiteralWithCast};
+    }}
+}}
+";
+
+            var fixedCode = $@"
+class ClassName
+{{
+    public void Method()
+    {{
+        var x = {correctLiteral};
+    }}
+}}
+";
+            DiagnosticResult[] expectedDiagnosticResult =
+{
+                this.CSharpDiagnostic().WithLocation(6, 17)
+            };
+            await this.VerifyCSharpDiagnosticAsync(testCode, expectedDiagnosticResult, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpFixAsync(testCode, fixedCode, cancellationToken: CancellationToken.None).ConfigureAwait(false);
+        }
+
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
             return new SA1139CodeFixProvider();
