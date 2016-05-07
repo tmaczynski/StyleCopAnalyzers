@@ -56,7 +56,7 @@ class ClassName
         [InlineData("long", "L")]
         [InlineData("ulong", "UL")]
         [InlineData("uint", "U")]
-        public async Task TestUsingCastsInFieldDeclarationProducesDiagnosticAsync(string literalType, string literalSuffix)
+        public async Task TestUsingCastsInFieldDeclarationProducesDiagnosticAndCorrectCodefixAsync(string literalType, string literalSuffix)
         {
             var testCode = $@"
 class ClassName
@@ -116,7 +116,7 @@ class ClassName
         [InlineData("long", "L")]
         [InlineData("ulong", "UL")]
         [InlineData("uint", "U")]
-        public async Task TestUsingCastsInMethodProducesDiagnosticAsync(string literalType, string literalSuffix)
+        public async Task TestUsingCastsInMethodProducesDiagnosticAndCorrectCodefixAsync(string literalType, string literalSuffix)
         {
             var testCode = $@"
 class ClassName
@@ -156,7 +156,7 @@ class ClassName
         [InlineData("(ulong)1l", "1UL")]
         [InlineData("(ulong)1U", "1UL")]
         [InlineData("(ulong)1u", "1UL")]
-        public async Task TestUsingCastsOnLiteralsWithSuffixInMethodProducesDiagnosticAsync(string wrongLiteralWithCast, string correctLiteral)
+        public async Task TestUsingCastsOnLiteralsWithSuffixInMethodProducesDiagnosticAndCorrectCodefixAsync(string wrongLiteralWithCast, string correctLiteral)
         {
             var testCode = $@"
 class ClassName
