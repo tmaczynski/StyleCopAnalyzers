@@ -59,13 +59,13 @@ namespace StyleCop.Analyzers.ReadabilityRules
             }
 
             var replacementNode = GenerateReplacementNode(node);
-            var newSyntaxRoot = syntaxRoot.ReplaceNode(node.Parent, replacementNode);
+            var newSyntaxRoot = syntaxRoot.ReplaceNode(node, replacementNode);
             return document.WithSyntaxRoot(newSyntaxRoot);
         }
 
         private static SyntaxNode GenerateReplacementNode(CastExpressionSyntax node)
         {
-            throw new NotImplementedException();
+            return node.Expression.WithTriviaFrom(node);
         }
     }
 }
