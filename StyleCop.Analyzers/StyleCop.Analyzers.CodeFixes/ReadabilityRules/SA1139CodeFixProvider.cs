@@ -34,7 +34,7 @@ namespace StyleCop.Analyzers.ReadabilityRules
         public override ImmutableArray<string> FixableDiagnosticIds { get; } =
             ImmutableArray.Create(SA1139UseLiteralSuffixNotationInsteadOfCasting.DiagnosticId);
 
-        private static Dictionary<SyntaxKind, string> LiteralSyntaxKindToSuffix = new Dictionary<SyntaxKind, string>()
+        private static readonly Dictionary<SyntaxKind, string> LiteralSyntaxKindToSuffix = new Dictionary<SyntaxKind, string>()
             {
                 { SyntaxKind.LongKeyword, "L" },
                 { SyntaxKind.ULongKeyword, "UL" },
