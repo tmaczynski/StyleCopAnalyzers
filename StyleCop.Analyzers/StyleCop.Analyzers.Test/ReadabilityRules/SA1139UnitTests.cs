@@ -126,7 +126,7 @@ class ClassName
 
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
-            throw new NotImplementedException("CodeFixProvider is not available yet");
+            return new SA1139CodeFixProvider();
         }
 
         protected override IEnumerable<DiagnosticAnalyzer> GetCSharpDiagnosticAnalyzers()
