@@ -27,6 +27,7 @@ namespace StyleCop.Analyzers.ReadabilityRules
     [Shared]
     internal class SA1139CodeFixProvider : CodeFixProvider
     {
+        private static readonly char[] LettersAllowedInLiteralSuffix = { 'u', 'U', 'l', 'L' };
         private static readonly Dictionary<SyntaxKind, string> LiteralSyntaxKindToSuffix = new Dictionary<SyntaxKind, string>()
             {
                 { SyntaxKind.LongKeyword, "L" },
@@ -73,9 +74,16 @@ namespace StyleCop.Analyzers.ReadabilityRules
         {
             var literalExpressionSyntax = (LiteralExpressionSyntax)node.Expression;
             var typeToken = node.Type.GetFirstToken();
+            var literalWithoutSuffix = StripLiteralSuffix(literalExpressionSyntax.Token.Text);
             var correspondingSuffix = LiteralSyntaxKindToSuffix[typeToken.Kind()];
-            var fixedCode = SyntaxFactory.ParseExpression(literalExpressionSyntax.Token.Text + correspondingSuffix);
+            var fixedCode = SyntaxFactory.ParseExpression(literalWithoutSuffix + correspondingSuffix);
             return fixedCode.WithTriviaFrom(node);
+        }
+
+        private static string StripLiteralSuffix(string literal)
+        {
+            int suffixStartIndex = literal.IndexOfAny(LettersAllowedInLiteralSuffix);
+            return suffixStartIndex == -1 ? literal : literal.Substring(0, suffixStartIndex);
         }
     }
 }
