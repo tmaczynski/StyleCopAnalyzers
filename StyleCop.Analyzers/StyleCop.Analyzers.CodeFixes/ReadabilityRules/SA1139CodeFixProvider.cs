@@ -3,24 +3,21 @@
 
 /* Contributor: Tomasz Maczyński */
 
-using Microsoft.CodeAnalysis.CSharp;
-
 namespace StyleCop.Analyzers.ReadabilityRules
 {
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
-    using System.Threading;
-    using System.Threading.Tasks;
     using System.Linq;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using Helpers;
-    using System.Composition;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeActions;
     using Microsoft.CodeAnalysis.CodeFixes;
+    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     /// <summary>
