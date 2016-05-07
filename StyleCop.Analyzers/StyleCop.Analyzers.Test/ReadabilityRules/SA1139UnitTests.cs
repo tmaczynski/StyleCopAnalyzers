@@ -31,9 +31,9 @@ namespace StyleCop.Analyzers.Test.ReadabilityRules
         [InlineData("long", "L")]
         [InlineData("long", "l")]
         [InlineData("ulong", "UL")]
-        [InlineData("ulong", "ul")]
-        [InlineData("ulong", "uL")]
         [InlineData("ulong", "Ul")]
+        [InlineData("ulong", "uL")]
+        [InlineData("ulong", "ul")]
         [InlineData("uint", "U")]
         [InlineData("uint", "u")]
         public async Task TestUsingLiteralsAsClassFieldsDoesNotProduceDiagnosticAsync(string literalType, string literalSuffix)
@@ -88,9 +88,9 @@ class ClassName
         [InlineData("L")]
         [InlineData("l")]
         [InlineData("UL")]
-        [InlineData("ul")]
-        [InlineData("uL")]
         [InlineData("Ul")]
+        [InlineData("uL")]
+        [InlineData("ul")]
         [InlineData("U")]
         [InlineData("u")]
         public async Task TestUsingLiteralsInMethodDoesNotProduceDiagnosticAsync(string literalSuffix)
