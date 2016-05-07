@@ -27,16 +27,16 @@ namespace StyleCop.Analyzers.ReadabilityRules
     [Shared]
     internal class SA1139CodeFixProvider : CodeFixProvider
     {
-        /// <inheritdoc/>
-        public override ImmutableArray<string> FixableDiagnosticIds { get; } =
-            ImmutableArray.Create(SA1139UseLiteralSuffixNotationInsteadOfCasting.DiagnosticId);
-
         private static readonly Dictionary<SyntaxKind, string> LiteralSyntaxKindToSuffix = new Dictionary<SyntaxKind, string>()
             {
                 { SyntaxKind.LongKeyword, "L" },
                 { SyntaxKind.ULongKeyword, "UL" },
                 { SyntaxKind.UIntKeyword, "U" }
             };
+
+        /// <inheritdoc/>
+        public override ImmutableArray<string> FixableDiagnosticIds { get; } =
+            ImmutableArray.Create(SA1139UseLiteralSuffixNotationInsteadOfCasting.DiagnosticId);
 
         /// <inheritdoc/>
         public override Task RegisterCodeFixesAsync(CodeFixContext context)
