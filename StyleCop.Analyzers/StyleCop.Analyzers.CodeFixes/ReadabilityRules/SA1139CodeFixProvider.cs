@@ -3,6 +3,8 @@
 
 /* Contributor: Tomasz Maczyński */
 
+using Microsoft.CodeAnalysis.CSharp;
+
 namespace StyleCop.Analyzers.ReadabilityRules
 {
     using System;
@@ -31,6 +33,13 @@ namespace StyleCop.Analyzers.ReadabilityRules
         /// <inheritdoc/>
         public override ImmutableArray<string> FixableDiagnosticIds { get; } =
             ImmutableArray.Create(SA1139UseLiteralSuffixNotationInsteadOfCasting.DiagnosticId);
+
+        private static Dictionary<SyntaxKind, string> LiteralSyntaxKindToSuffix = new Dictionary<SyntaxKind, string>()
+            {
+                { SyntaxKind.LongKeyword, "L" },
+                { SyntaxKind.ULongKeyword, "UL" },
+                { SyntaxKind.UIntKeyword, "U" }
+            };
 
         /// <inheritdoc/>
         public override Task RegisterCodeFixesAsync(CodeFixContext context)
@@ -65,7 +74,11 @@ namespace StyleCop.Analyzers.ReadabilityRules
 
         private static SyntaxNode GenerateReplacementNode(CastExpressionSyntax node)
         {
-            return node.Expression.WithTriviaFrom(node);
+            var literalExpressionSyntax = (LiteralExpressionSyntax)node.Expression;
+            var typeToken = node.Type.GetFirstToken();
+            var correspondingSuffix = LiteralSyntaxKindToSuffix[typeToken.Kind()];
+            var fixedCode = SyntaxFactory.ParseExpression(literalExpressionSyntax.Token.Text + correspondingSuffix);
+            return fixedCode.WithTriviaFrom(node);
         }
     }
 }
