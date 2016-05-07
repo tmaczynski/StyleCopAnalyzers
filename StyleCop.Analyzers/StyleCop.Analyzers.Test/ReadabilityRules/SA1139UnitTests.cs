@@ -3,21 +3,20 @@
 
 /* Contributor: Tomasz Maczyński */
 
-using System.Runtime.InteropServices;
-
 namespace StyleCop.Analyzers.Test.ReadabilityRules
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.InteropServices;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
+    using Analyzers.ReadabilityRules;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.Diagnostics;
     using TestHelper;
     using Xunit;
-    using Analyzers.ReadabilityRules;
-    using System.Threading;
 
     public class SA1139UnitTests : CodeFixVerifier
     {
