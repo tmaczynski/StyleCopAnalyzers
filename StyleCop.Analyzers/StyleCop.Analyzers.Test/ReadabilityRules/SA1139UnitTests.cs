@@ -3,6 +3,8 @@
 
 /* Contributor: Tomasz Maczyński */
 
+using System.Runtime.InteropServices;
+
 namespace StyleCop.Analyzers.Test.ReadabilityRules
 {
     using System;
@@ -49,12 +51,13 @@ class ClassName
         /// Verifies that using casts in a declaration of a class field does produce diagnostic.
         /// </summary>
         /// <param name="literalType">The type which is checked.</param>
+        /// <param name="literalSuffix">The suffix corresponding to the type</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Theory]
-        [InlineData("long")]
-        [InlineData("ulong")]
-        [InlineData("uint")]
-        public async Task TestUsingCastsInFieldDeclarationProducesDiagnosticAsync(string literalType)
+        [InlineData("long", "L")]
+        [InlineData("ulong", "UL")]
+        [InlineData("uint", "U")]
+        public async Task TestUsingCastsInFieldDeclarationProducesDiagnosticAsync(string literalType, string literalSuffix)
         {
             var testCode = $@"
 class ClassName
@@ -62,11 +65,18 @@ class ClassName
     {literalType} x = ({literalType})1;
 }}
 ";
+            var fixedCode = $@"
+class ClassName
+{{
+    {literalType} x = 1{literalSuffix};
+}}
+";
             DiagnosticResult[] expectedDiagnosticResult =
             {
                 this.CSharpDiagnostic().WithLocation(4, 10 + literalType.Length)
             };
             await this.VerifyCSharpDiagnosticAsync(testCode, expectedDiagnosticResult, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpFixAsync(testCode, fixedCode, cancellationToken: CancellationToken.None).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -101,12 +111,13 @@ class ClassName
         /// Verifies that using casts in a method body produces diagnostic.
         /// </summary>
         /// <param name="literalType">The type which is checked.</param>
+        /// <param name="literalSuffix">The suffix corresponding to the type</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Theory]
-        [InlineData("long")]
-        [InlineData("ulong")]
-        [InlineData("uint")]
-        public async Task TestUsingCastsInMethodProducesDiagnosticAsync(string literalType)
+        [InlineData("long", "L")]
+        [InlineData("ulong", "UL")]
+        [InlineData("uint", "U")]
+        public async Task TestUsingCastsInMethodProducesDiagnosticAsync(string literalType, string literalSuffix)
         {
             var testCode = $@"
 class ClassName
@@ -117,11 +128,22 @@ class ClassName
     }}
 }}
 ";
+
+            var fixedCode = $@"
+class ClassName
+{{
+    public void Method()
+    {{
+        var x = 1{literalSuffix};
+    }}
+}}
+";
             DiagnosticResult[] expectedDiagnosticResult =
             {
                 this.CSharpDiagnostic().WithLocation(6, 17)
             };
             await this.VerifyCSharpDiagnosticAsync(testCode, expectedDiagnosticResult, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpFixAsync(testCode, fixedCode, cancellationToken: CancellationToken.None).ConfigureAwait(false);
         }
 
         protected override CodeFixProvider GetCSharpCodeFixProvider()
