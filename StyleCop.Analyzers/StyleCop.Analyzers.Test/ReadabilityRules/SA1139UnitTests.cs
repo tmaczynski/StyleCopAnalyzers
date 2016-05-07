@@ -64,7 +64,7 @@ class ClassName
 ";
             DiagnosticResult[] expectedDiagnosticResult =
             {
-                this.CSharpDiagnostic().WithLocation(4, 11 + literalType.Length)
+                this.CSharpDiagnostic().WithLocation(4, 10 + literalType.Length)
             };
             await this.VerifyCSharpDiagnosticAsync(testCode, expectedDiagnosticResult, CancellationToken.None).ConfigureAwait(false);
         }
@@ -119,7 +119,7 @@ class ClassName
 ";
             DiagnosticResult[] expectedDiagnosticResult =
             {
-                this.CSharpDiagnostic().WithLocation(6, 18)
+                this.CSharpDiagnostic().WithLocation(6, 17)
             };
             await this.VerifyCSharpDiagnosticAsync(testCode, expectedDiagnosticResult, CancellationToken.None).ConfigureAwait(false);
         }

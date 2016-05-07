@@ -87,7 +87,7 @@ namespace StyleCop.Analyzers.ReadabilityRules
                 return;
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(Descriptor, castingToTypeSyntax.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(Descriptor, castExpressionSyntax.GetLocation()));
         }
     }
 }
