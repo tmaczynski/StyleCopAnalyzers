@@ -145,6 +145,12 @@ class ClassName
             await this.VerifyCSharpFixAsync(testCode, fixedCode, cancellationToken: CancellationToken.None).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Verifies that using casts for a literal with a suffix produces diagnostics with a correct codefix.
+        /// </summary>
+        /// <param name="wrongLiteralWithCast">The literal with a suffix and a cast</param>
+        /// <param name="correctLiteral">The corresponding literal with suffix</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Theory]
         [InlineData("(ulong)1L", "1UL")]
         [InlineData("(ulong)1l", "1UL")]
