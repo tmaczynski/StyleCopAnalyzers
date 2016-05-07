@@ -492,6 +492,9 @@
   <data name="SA1139Title" xml:space="preserve">
     <value>Use literal suffix notation instead of casting</value>
   </data>
+  <data name="SA1139CodeFix" xml:space="preserve">
+    <value>Use literal suffix notation instead of casting</value>
+  </data>
   <data name="SX1101CodeFix" xml:space="preserve">
     <value>Remove 'this.' prefix</value>
   </data>
