@@ -47,6 +47,34 @@ class ClassName
         }
 
         /// <summary>
+        /// Verifies that using literals in a method body does not produce diagnostic.
+        /// </summary>
+        /// <param name="literalSuffix">Literal's suffix.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Theory]
+        [InlineData("L")]
+        [InlineData("l")]
+        [InlineData("UL")]
+        [InlineData("Ul")]
+        [InlineData("uL")]
+        [InlineData("ul")]
+        [InlineData("U")]
+        [InlineData("u")]
+        public async Task TestUsingLiteralsInMethodDoesNotProduceDiagnosticAsync(string literalSuffix)
+        {
+            var testCode = $@"
+class ClassName
+{{
+    public void Method()
+    {{
+        var x = 1{literalSuffix};
+    }}
+}}
+";
+            await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Verifies that using casts in a declaration of a class field does produce diagnostic.
         /// </summary>
         /// <param name="literalType">The type which is checked.</param>
@@ -76,34 +104,6 @@ class ClassName
             };
             await this.VerifyCSharpDiagnosticAsync(testCode, expectedDiagnosticResult, CancellationToken.None).ConfigureAwait(false);
             await this.VerifyCSharpFixAsync(testCode, fixedCode, cancellationToken: CancellationToken.None).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Verifies that using literals in a method body does not produce diagnostic.
-        /// </summary>
-        /// <param name="literalSuffix">Literal's suffix.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Theory]
-        [InlineData("L")]
-        [InlineData("l")]
-        [InlineData("UL")]
-        [InlineData("Ul")]
-        [InlineData("uL")]
-        [InlineData("ul")]
-        [InlineData("U")]
-        [InlineData("u")]
-        public async Task TestUsingLiteralsInMethodDoesNotProduceDiagnosticAsync(string literalSuffix)
-        {
-            var testCode = $@"
-class ClassName
-{{
-    public void Method()
-    {{
-        var x = 1{literalSuffix};
-    }}
-}}
-";
-            await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
         }
 
         /// <summary>
