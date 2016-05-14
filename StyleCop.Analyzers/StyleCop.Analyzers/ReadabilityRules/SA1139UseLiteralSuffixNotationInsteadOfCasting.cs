@@ -42,7 +42,6 @@ namespace StyleCop.Analyzers.ReadabilityRules
         private static readonly Action<SyntaxNodeAnalysisContext> GenericNameAction = HandleGenericName;
 
         // TODO: remove code duplication
-        private static readonly char[] LettersAllowedInLiteralSuffix = { 'u', 'U', 'l', 'L' };
         private static readonly Dictionary<string, SyntaxKind> UppercaseLiteralSuffixToLiteralSyntax = new Dictionary<string, SyntaxKind>()
             {
                 { string.Empty, SyntaxKind.IntKeyword },
@@ -50,6 +49,11 @@ namespace StyleCop.Analyzers.ReadabilityRules
                 { "UL", SyntaxKind.ULongKeyword },
                 { "U", SyntaxKind.UIntKeyword }
             };
+
+        private static readonly char[] LettersAllowedInLiteralSuffix = UppercaseLiteralSuffixToLiteralSyntax.Keys
+            .SelectMany(s => s.ToCharArray()).Distinct()
+            .SelectMany(c => new[] { char.ToLowerInvariant(c), c })
+            .ToArray();
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
