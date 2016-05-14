@@ -145,6 +145,29 @@ class ClassName
             await this.VerifyCSharpFixAsync(testCode, fixedCode, cancellationToken: CancellationToken.None).ConfigureAwait(false);
         }
 
+        [Theory]
+        [InlineData("1L", "long")]
+        [InlineData("1l", "long")]
+        [InlineData("1UL", "ulong")]
+        [InlineData("1Ul", "ulong")]
+        [InlineData("1uL", "ulong")]
+        [InlineData("1ul", "ulong")]
+        [InlineData("1U", "uint")]
+        [InlineData("1u", "uint")]
+        public async Task TestDoNotRaportDiagnositcOnRedundantCastAsync(string literal, string type)
+        {
+            var testCode = $@"
+class ClassName
+{{
+    public void Method()
+    {{
+        var x = ({type}){literal};
+    }}
+}}
+";
+            await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
+        }
+
         /// <summary>
         /// Verifies that using casts for a literal with a suffix produces diagnostics with a correct codefix.
         /// </summary>
