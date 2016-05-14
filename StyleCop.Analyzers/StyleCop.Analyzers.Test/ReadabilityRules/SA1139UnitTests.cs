@@ -35,6 +35,12 @@ namespace StyleCop.Analyzers.Test.ReadabilityRules
         [InlineData("ulong", "ul")]
         [InlineData("uint", "U")]
         [InlineData("uint", "u")]
+        [InlineData("float", "F")]
+        [InlineData("float", "f")]
+        [InlineData("double", "D")]
+        [InlineData("double", "d")]
+        [InlineData("decimal", "M")]
+        [InlineData("decimal", "m")]
         public async Task TestUsingLiteralsAsClassFieldsDoesNotProduceDiagnosticAsync(string literalType, string literalSuffix)
         {
             var testCode = $@"
@@ -60,6 +66,12 @@ class ClassName
         [InlineData("ul")]
         [InlineData("U")]
         [InlineData("u")]
+        [InlineData("F")]
+        [InlineData("f")]
+        [InlineData("D")]
+        [InlineData("d")]
+        [InlineData("M")]
+        [InlineData("m")]
         public async Task TestUsingLiteralsInMethodDoesNotProduceDiagnosticAsync(string literalSuffix)
         {
             var testCode = $@"
@@ -84,6 +96,9 @@ class ClassName
         [InlineData("long", "L")]
         [InlineData("ulong", "UL")]
         [InlineData("uint", "U")]
+        [InlineData("float", "F")]
+        [InlineData("double", "D")]
+        [InlineData("decimal", "M")]
         public async Task TestUsingCastsInFieldDeclarationProducesDiagnosticAndCorrectCodefixAsync(string literalType, string literalSuffix)
         {
             var testCode = $@"
@@ -116,6 +131,9 @@ class ClassName
         [InlineData("long", "L")]
         [InlineData("ulong", "UL")]
         [InlineData("uint", "U")]
+        [InlineData("float", "F")]
+        [InlineData("double", "D")]
+        [InlineData("decimal", "M")]
         public async Task TestUsingCastsInMethodProducesDiagnosticAndCorrectCodefixAsync(string literalType, string literalSuffix)
         {
             var testCode = $@"
@@ -146,6 +164,7 @@ class ClassName
         }
 
         [Theory]
+        [InlineData("1", "int")]
         [InlineData("1L", "long")]
         [InlineData("1l", "long")]
         [InlineData("1UL", "ulong")]
@@ -154,6 +173,12 @@ class ClassName
         [InlineData("1ul", "ulong")]
         [InlineData("1U", "uint")]
         [InlineData("1u", "uint")]
+        [InlineData("1F", "float")]
+        [InlineData("1f", "float")]
+        [InlineData("1D", "double")]
+        [InlineData("1d", "double")]
+        [InlineData("1M", "decimal")]
+        [InlineData("1m", "decimal")]
         public async Task TestDoNotRaportDiagnositcOnRedundantCastAsync(string literal, string type)
         {
             var testCode = $@"
