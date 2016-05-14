@@ -47,7 +47,10 @@ namespace StyleCop.Analyzers.ReadabilityRules
                 { string.Empty, SyntaxKind.IntKeyword },
                 { "L", SyntaxKind.LongKeyword },
                 { "UL", SyntaxKind.ULongKeyword },
-                { "U", SyntaxKind.UIntKeyword }
+                { "U", SyntaxKind.UIntKeyword },
+                { "F", SyntaxKind.FloatKeyword },
+                { "D", SyntaxKind.DoubleKeyword },
+                { "M", SyntaxKind.DecimalKeyword }
             };
 
         private static readonly char[] LettersAllowedInLiteralSuffix = UppercaseLiteralSuffixToLiteralSyntax.Keys
@@ -89,7 +92,8 @@ namespace StyleCop.Analyzers.ReadabilityRules
             }
 
             var syntaxKindKeyword = castingToTypeSyntax.Keyword.Kind();
-            if (!SyntaxKinds.IntegerLiteralKeyword.Contains(syntaxKindKeyword))
+            if (!SyntaxKinds.IntegerLiteralKeyword.Contains(syntaxKindKeyword)
+                && !SyntaxKinds.RealLiteralKeyword.Contains(syntaxKindKeyword))
             {
                 return;
             }

@@ -27,13 +27,21 @@ namespace StyleCop.Analyzers.ReadabilityRules
     [Shared]
     internal class SA1139CodeFixProvider : CodeFixProvider
     {
-        private static readonly char[] LettersAllowedInLiteralSuffix = { 'u', 'U', 'l', 'L' };
         private static readonly Dictionary<SyntaxKind, string> LiteralSyntaxKindToSuffix = new Dictionary<SyntaxKind, string>()
             {
+                { SyntaxKind.IntKeyword, string.Empty },
                 { SyntaxKind.LongKeyword, "L" },
                 { SyntaxKind.ULongKeyword, "UL" },
-                { SyntaxKind.UIntKeyword, "U" }
+                { SyntaxKind.UIntKeyword, "U" },
+                { SyntaxKind.FloatKeyword, "F"},
+                { SyntaxKind.DoubleKeyword, "D" },
+                { SyntaxKind.DecimalKeyword, "M" }
             };
+
+        private static readonly char[] LettersAllowedInLiteralSuffix = LiteralSyntaxKindToSuffix.Values
+            .SelectMany(s => s.ToCharArray()).Distinct()
+            .SelectMany(c => new[] { char.ToLowerInvariant(c), c })
+            .ToArray();
 
         /// <inheritdoc/>
         public override ImmutableArray<string> FixableDiagnosticIds { get; } =
