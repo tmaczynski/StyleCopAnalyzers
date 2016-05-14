@@ -39,6 +39,16 @@ namespace StyleCop.Analyzers.ReadabilityRules
         private static readonly Action<CompilationStartAnalysisContext> CompilationStartAction = HandleCompilationStart;
         private static readonly Action<SyntaxNodeAnalysisContext> GenericNameAction = HandleGenericName;
 
+        // TODO: remove code duplication
+        private static readonly char[] LettersAllowedInLiteralSuffix = { 'u', 'U', 'l', 'L' };
+        private static readonly Dictionary<string, SyntaxKind> UppercaseLiteralSuffixToLiteralSyntax = new Dictionary<string, SyntaxKind>()
+            {
+                { string.Empty, SyntaxKind.IntKeyword },
+                { "L", SyntaxKind.LongKeyword },
+                { "UL", SyntaxKind.ULongKeyword },
+                { "U", SyntaxKind.UIntKeyword }
+            };
+
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
             ImmutableArray.Create(Descriptor);
@@ -73,7 +83,6 @@ namespace StyleCop.Analyzers.ReadabilityRules
             }
 
             var syntaxKindKeyword = castingToTypeSyntax.Keyword.Kind();
-
             if (syntaxKindKeyword != SyntaxKind.LongKeyword
                 && syntaxKindKeyword != SyntaxKind.ULongKeyword
                 && syntaxKindKeyword != SyntaxKind.UIntKeyword)
@@ -87,7 +96,28 @@ namespace StyleCop.Analyzers.ReadabilityRules
                 return;
             }
 
+            if (GetCorrespondingSyntaxKind(castedElementTypeSyntax) == syntaxKindKeyword)
+            {
+                // cast is redundant which is reported by another diagnostic.
+                return;
+            }
+
             context.ReportDiagnostic(Diagnostic.Create(Descriptor, castExpressionSyntax.GetLocation()));
+        }
+
+        private static SyntaxKind GetCorrespondingSyntaxKind(LiteralExpressionSyntax literalExprssionSyntax)
+        {
+            var tokenText = literalExprssionSyntax.Token.Text;
+            int suffixStartIndex = tokenText.IndexOfAny(LettersAllowedInLiteralSuffix);
+            var suffix = suffixStartIndex == -1 ?
+                string.Empty :
+                tokenText.Substring(suffixStartIndex, tokenText.Length - suffixStartIndex);
+            return GetLiteralSyntaxKindBySuffix(suffix);
+        }
+
+        private static SyntaxKind GetLiteralSyntaxKindBySuffix(string suffix)
+        {
+            return UppercaseLiteralSuffixToLiteralSyntax[suffix.ToUpperInvariant()];
         }
     }
 }
