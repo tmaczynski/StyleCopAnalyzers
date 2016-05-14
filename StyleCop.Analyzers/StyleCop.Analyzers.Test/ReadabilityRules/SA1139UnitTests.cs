@@ -126,22 +126,32 @@ class ClassName
         /// </summary>
         /// <param name="literalType">The type which is checked.</param>
         /// <param name="literalSuffix">The suffix corresponding to the type</param>
+        /// <param name="sign">The sign of a number ("+", "-" or string.Empty)</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Theory]
-        [InlineData("long", "L")]
-        [InlineData("ulong", "UL")]
-        [InlineData("uint", "U")]
-        [InlineData("float", "F")]
-        [InlineData("double", "D")]
-        [InlineData("decimal", "M")]
-        public async Task TestUsingCastsInMethodProducesDiagnosticAndCorrectCodefixAsync(string literalType, string literalSuffix)
+        [InlineData("long", "L", "")]
+        [InlineData("long", "L", "+")]
+        [InlineData("long", "L", "-")]
+        [InlineData("ulong", "UL", "")]
+        [InlineData("ulong", "UL", "+")]
+        [InlineData("uint", "U", "")]
+        [InlineData("float", "F", "")]
+        [InlineData("float", "F", "+")]
+        [InlineData("float", "F", "-")]
+        [InlineData("double", "D", "")]
+        [InlineData("double", "D", "+")]
+        [InlineData("double", "D", "-")]
+        [InlineData("decimal", "M", "")]
+        [InlineData("decimal", "M", "+")]
+        [InlineData("decimal", "M", "-")]
+        public async Task TestUsingCastsInMethodProducesDiagnosticAndCorrectCodefixAsync(string literalType, string literalSuffix, string sign)
         {
             var testCode = $@"
 class ClassName
 {{
     public void Method()
     {{
-        var x = ({literalType})1;
+        var x = ({literalType}){sign}1;
     }}
 }}
 ";
@@ -151,7 +161,7 @@ class ClassName
 {{
     public void Method()
     {{
-        var x = 1{literalSuffix};
+        var x = {sign}1{literalSuffix};
     }}
 }}
 ";
