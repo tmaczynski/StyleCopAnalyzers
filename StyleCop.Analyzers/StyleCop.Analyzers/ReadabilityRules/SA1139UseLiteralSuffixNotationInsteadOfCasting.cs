@@ -3,6 +3,8 @@
 
 /* Contributor: Tomasz Maczyński */
 
+using StyleCop.Analyzers.Helpers;
+
 namespace StyleCop.Analyzers.ReadabilityRules
 {
     using Microsoft.CodeAnalysis;
@@ -83,9 +85,7 @@ namespace StyleCop.Analyzers.ReadabilityRules
             }
 
             var syntaxKindKeyword = castingToTypeSyntax.Keyword.Kind();
-            if (syntaxKindKeyword != SyntaxKind.LongKeyword
-                && syntaxKindKeyword != SyntaxKind.ULongKeyword
-                && syntaxKindKeyword != SyntaxKind.UIntKeyword)
+            if (!SyntaxKinds.IntegerLiteralKeyword.Contains(syntaxKindKeyword))
             {
                 return;
             }
