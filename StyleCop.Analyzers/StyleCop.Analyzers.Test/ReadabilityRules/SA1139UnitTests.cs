@@ -236,7 +236,7 @@ class ClassName
 }}
 ";
             DiagnosticResult[] expectedDiagnosticResult =
-{
+            {
                 this.CSharpDiagnostic().WithLocation(6, 17)
             };
             await this.VerifyCSharpDiagnosticAsync(testCode, expectedDiagnosticResult, CancellationToken.None).ConfigureAwait(false);
