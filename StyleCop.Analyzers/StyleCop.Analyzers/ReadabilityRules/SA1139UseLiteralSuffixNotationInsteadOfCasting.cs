@@ -83,11 +83,12 @@ namespace StyleCop.Analyzers.ReadabilityRules
                 return;
             }
 
-            var plusMinusSyntax = castExpressionSyntax.Expression as PrefixUnaryExpressionSyntax;
+            var unaryExpressionSyntax = castExpressionSyntax.Expression as PrefixUnaryExpressionSyntax;
+
             var castedElementTypeSyntax =
-                plusMinusSyntax == null ?
+                unaryExpressionSyntax == null ?
                 castExpressionSyntax.Expression as LiteralExpressionSyntax :
-                plusMinusSyntax.Operand as LiteralExpressionSyntax;
+                unaryExpressionSyntax.Operand as LiteralExpressionSyntax;
 
             if (castedElementTypeSyntax == null)
             {
