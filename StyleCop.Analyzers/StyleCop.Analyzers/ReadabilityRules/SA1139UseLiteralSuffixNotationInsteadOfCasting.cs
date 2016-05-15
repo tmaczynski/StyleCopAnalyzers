@@ -77,22 +77,16 @@ namespace StyleCop.Analyzers.ReadabilityRules
         {
             CastExpressionSyntax castExpressionSyntax = (CastExpressionSyntax)context.Node;
 
-            var exprNodes = castExpressionSyntax.ChildNodes().ToList();
-            if (exprNodes.Count != 2)
-            {
-                return;
-            }
-
-            var castingToTypeSyntax = exprNodes[0] as PredefinedTypeSyntax;
+            var castingToTypeSyntax = castExpressionSyntax.Type as PredefinedTypeSyntax;
             if (castingToTypeSyntax == null)
             {
                 return;
             }
 
-            var plusMinusSyntax = exprNodes[1] as PrefixUnaryExpressionSyntax;
+            var plusMinusSyntax = castExpressionSyntax.Expression as PrefixUnaryExpressionSyntax;
             LiteralExpressionSyntax castedElementTypeSyntax =
                 plusMinusSyntax == null ?
-                exprNodes[1] as LiteralExpressionSyntax :
+                castExpressionSyntax.Expression as LiteralExpressionSyntax :
                 plusMinusSyntax.Operand as LiteralExpressionSyntax;
 
             if (castedElementTypeSyntax == null)
