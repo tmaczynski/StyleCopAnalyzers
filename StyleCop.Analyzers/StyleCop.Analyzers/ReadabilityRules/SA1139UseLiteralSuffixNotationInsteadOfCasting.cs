@@ -75,7 +75,7 @@ namespace StyleCop.Analyzers.ReadabilityRules
 
         private static void HandleGenericName(SyntaxNodeAnalysisContext context)
         {
-            CastExpressionSyntax castExpressionSyntax = (CastExpressionSyntax)context.Node;
+            var castExpressionSyntax = (CastExpressionSyntax)context.Node;
 
             var castingToTypeSyntax = castExpressionSyntax.Type as PredefinedTypeSyntax;
             if (castingToTypeSyntax == null)
@@ -84,7 +84,7 @@ namespace StyleCop.Analyzers.ReadabilityRules
             }
 
             var plusMinusSyntax = castExpressionSyntax.Expression as PrefixUnaryExpressionSyntax;
-            LiteralExpressionSyntax castedElementTypeSyntax =
+            var castedElementTypeSyntax =
                 plusMinusSyntax == null ?
                 castExpressionSyntax.Expression as LiteralExpressionSyntax :
                 plusMinusSyntax.Operand as LiteralExpressionSyntax;
