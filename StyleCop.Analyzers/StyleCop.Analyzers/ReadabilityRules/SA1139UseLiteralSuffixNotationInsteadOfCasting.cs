@@ -84,7 +84,12 @@ namespace StyleCop.Analyzers.ReadabilityRules
             }
 
             var castingToTypeSyntax = exprNodes[0] as PredefinedTypeSyntax;
-            var castedElementTypeSyntax = exprNodes[1] as LiteralExpressionSyntax;
+
+            var plusMinusSyntax = exprNodes[1] as PrefixUnaryExpressionSyntax;
+            LiteralExpressionSyntax castedElementTypeSyntax =
+                plusMinusSyntax == null ?
+                exprNodes[1] as LiteralExpressionSyntax :
+                plusMinusSyntax.Operand as LiteralExpressionSyntax;
 
             if (castingToTypeSyntax == null || castedElementTypeSyntax == null)
             {

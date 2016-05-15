@@ -80,11 +80,18 @@ namespace StyleCop.Analyzers.ReadabilityRules
 
         private static SyntaxNode GenerateReplacementNode(CastExpressionSyntax node)
         {
-            var literalExpressionSyntax = (LiteralExpressionSyntax)node.Expression;
+            var plusMinusSyntax = node.Expression as PrefixUnaryExpressionSyntax;
+            var literalExpressionSyntax =
+                plusMinusSyntax == null ?
+                (LiteralExpressionSyntax)node.Expression :
+                (LiteralExpressionSyntax)plusMinusSyntax.Operand;
             var typeToken = node.Type.GetFirstToken();
+            var prefix = plusMinusSyntax == null
+                ? string.Empty
+                : plusMinusSyntax.OperatorToken.Text;
             var literalWithoutSuffix = StripLiteralSuffix(literalExpressionSyntax.Token.Text);
             var correspondingSuffix = LiteralSyntaxKindToSuffix[typeToken.Kind()];
-            var fixedCode = SyntaxFactory.ParseExpression(literalWithoutSuffix + correspondingSuffix);
+            var fixedCode = SyntaxFactory.ParseExpression(prefix + literalWithoutSuffix + correspondingSuffix);
             return fixedCode.WithTriviaFrom(node);
         }
 
