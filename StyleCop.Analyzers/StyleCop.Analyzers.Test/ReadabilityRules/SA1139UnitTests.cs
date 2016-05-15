@@ -243,6 +243,25 @@ class ClassName
             await this.VerifyCSharpFixAsync(testCode, fixedCode, cancellationToken: CancellationToken.None).ConfigureAwait(false);
         }
 
+        [Theory]
+        [InlineData("(long)~1")]
+        [InlineData("(ulong)~1")]
+        [InlineData("(bool)true")]
+        [InlineData("(bool)(false)")]
+        public async Task TestLegalCastsShouldNotTriggerDiagnosticAsync(string correctCastExpression)
+        {
+            var testCode = $@"
+class ClassName
+{{
+    public void Method()
+    {{
+        var x = {correctCastExpression};
+    }}
+}}
+";
+            await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
+        }
+
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
             return new SA1139CodeFixProvider();
