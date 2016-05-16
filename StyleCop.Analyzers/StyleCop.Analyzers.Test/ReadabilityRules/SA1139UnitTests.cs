@@ -280,6 +280,42 @@ class ClassName
             // await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
         }
 
+        [Theory]
+        [InlineData("(ulong)-1L", "18446744073709551615L")]
+        public async Task TestCastsInUncheckedEnviromentShouldTriggerDiagnosticAsync(string castExpression, string literal)
+        {
+            var testCode = $@"
+class ClassName
+{{
+    public void Method()
+    {{
+        unchecked
+        {{
+            var x = {castExpression};
+        }}
+    }}
+}}
+";
+            var fixedCode = $@"
+class ClassName
+{{
+    public void Method()
+    {{
+        unchecked
+        {{
+            var x = {literal};
+        }}
+    }}
+}}
+";
+            DiagnosticResult[] expectedDiagnosticResult =
+            {
+                this.CSharpDiagnostic().WithLocation(8, 21)
+            };
+            await this.VerifyCSharpDiagnosticAsync(testCode, expectedDiagnosticResult, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpFixAsync(testCode, fixedCode, cancellationToken: CancellationToken.None).ConfigureAwait(false);
+        }
+
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
             return new SA1139CodeFixProvider();
