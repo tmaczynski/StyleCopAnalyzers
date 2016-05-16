@@ -122,6 +122,12 @@ namespace StyleCop.Analyzers.ReadabilityRules
                 return;
             }
 
+            if (!context.SemanticModel.GetConstantValue(context.Node).HasValue)
+            {
+                // cast does not have a valid value - e.g. (ulong)-1
+                return;
+            }
+
             context.ReportDiagnostic(Diagnostic.Create(Descriptor, castExpressionSyntax.GetLocation()));
         }
 
