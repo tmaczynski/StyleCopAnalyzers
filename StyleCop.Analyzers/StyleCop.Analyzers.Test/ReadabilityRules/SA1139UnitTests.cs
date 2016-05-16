@@ -248,7 +248,7 @@ class ClassName
         [InlineData("(long)~1")]
         [InlineData("(bool)true")]
         [InlineData("(bool)(false)")]
-        public async Task TestLegalCastsShouldNotTriggerDiagnosticAsync(string correctCastExpression)
+        public async Task TestOtherTypesOfCastsShouldNotTriggerDiagnosticAsync(string correctCastExpression)
         {
             var testCode = $@"
 class ClassName
