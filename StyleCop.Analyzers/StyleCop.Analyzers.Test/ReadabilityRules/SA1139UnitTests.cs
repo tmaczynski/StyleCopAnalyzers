@@ -13,6 +13,7 @@ namespace StyleCop.Analyzers.Test.ReadabilityRules
     using System.Threading;
     using System.Threading.Tasks;
     using Analyzers.ReadabilityRules;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.Diagnostics;
     using TestHelper;
@@ -245,7 +246,6 @@ class ClassName
 
         [Theory]
         [InlineData("(long)~1")]
-        [InlineData("(ulong)~1")]
         [InlineData("(bool)true")]
         [InlineData("(bool)(false)")]
         public async Task TestLegalCastsShouldNotTriggerDiagnosticAsync(string correctCastExpression)
@@ -260,6 +260,28 @@ class ClassName
 }}
 ";
             await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        [Theory]
+        [InlineData("(ulong)-1")]
+        public async Task TestCodeTriggeringCS0221ShouldNotTriggerDiagnosticAsync(string castExpression)
+        {
+            var testCode = $@"
+class ClassName
+{{
+    public void Method()
+    {{
+        var x = {castExpression};
+    }}
+}}
+";
+            var expectedError = this.CSharpDiagnostic().WithLocation(6, 17);
+            //expectedError.Severity = DiagnosticSeverity.Error;
+            DiagnosticResult[] expectedDiagnosticResult =
+            {
+                expectedError
+            };
+            await this.VerifyCSharpDiagnosticAsync(testCode, expectedDiagnosticResult, CancellationToken.None).ConfigureAwait(false);
         }
 
         protected override CodeFixProvider GetCSharpCodeFixProvider()
