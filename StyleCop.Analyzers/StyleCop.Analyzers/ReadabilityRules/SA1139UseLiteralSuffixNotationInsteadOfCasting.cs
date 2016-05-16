@@ -84,6 +84,14 @@ namespace StyleCop.Analyzers.ReadabilityRules
             }
 
             var unaryExpressionSyntax = castExpressionSyntax.Expression as PrefixUnaryExpressionSyntax;
+            if (unaryExpressionSyntax != null)
+            {
+                if (unaryExpressionSyntax.Kind() != SyntaxKind.UnaryPlusExpression
+                    && unaryExpressionSyntax.Kind() != SyntaxKind.UnaryMinusExpression)
+                {
+                    return;
+                }
+            }
 
             var castedElementTypeSyntax =
                 unaryExpressionSyntax == null ?
