@@ -19,6 +19,7 @@ namespace StyleCop.Analyzers.ReadabilityRules
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Microsoft.CodeAnalysis.Text;
 
     /// <summary>
     /// Implements a code fix for <see cref="SA1139UseLiteralSuffixNotationInsteadOfCasting"/>.
@@ -66,6 +67,7 @@ namespace StyleCop.Analyzers.ReadabilityRules
         private static async Task<Document> GetTransformedDocumentAsync(Document document, Diagnostic diagnostic, CancellationToken cancellationToken)
         {
             var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+            var oldSemanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
             var node = syntaxRoot.FindNode(diagnostic.Location.SourceSpan, getInnermostNodeForTie: true) as CastExpressionSyntax;
             if (node == null)
@@ -75,7 +77,24 @@ namespace StyleCop.Analyzers.ReadabilityRules
 
             var replacementNode = GenerateReplacementNode(node);
             var newSyntaxRoot = syntaxRoot.ReplaceNode(node, replacementNode);
-            return document.WithSyntaxRoot(newSyntaxRoot);
+            var newDocument = document.WithSyntaxRoot(newSyntaxRoot);
+            var newSemanticModel = await newDocument.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
+            var newNode = newSemanticModel.SyntaxTree.GetRoot().FindNode(
+                span: new TextSpan(start: node.FullSpan.Start, length: replacementNode.FullSpan.Length),
+                getInnermostNodeForTie: true);
+
+            var oldConstantValue = oldSemanticModel.GetConstantValue(node).Value;
+            var newConstantValueOption = newSemanticModel.GetConstantValue(newNode, cancellationToken);
+            if (newConstantValueOption.HasValue && oldConstantValue.Equals(newConstantValueOption.Value))
+            {
+                return newDocument;
+            }
+            else
+            {
+                var newNodeBasedOnValue = GenerateReplacementNodeBasedOnValue(node, oldConstantValue);
+                newSyntaxRoot = syntaxRoot.ReplaceNode(node, newNodeBasedOnValue);
+                return document.WithSyntaxRoot(newSyntaxRoot);
+            }
         }
 
         private static SyntaxNode GenerateReplacementNode(CastExpressionSyntax node)
@@ -91,8 +110,18 @@ namespace StyleCop.Analyzers.ReadabilityRules
                 : plusMinusSyntax.OperatorToken.Text;
             var literalWithoutSuffix = StripLiteralSuffix(literalExpressionSyntax.Token.Text);
             var correspondingSuffix = LiteralSyntaxKindToSuffix[typeToken.Kind()];
-            var fixedCode = SyntaxFactory.ParseExpression(prefix + literalWithoutSuffix + correspondingSuffix);
-            return fixedCode.WithTriviaFrom(node);
+            var fixedCodePreservingText = SyntaxFactory.ParseExpression(prefix + literalWithoutSuffix + correspondingSuffix);
+
+            return fixedCodePreservingText.WithTriviaFrom(node);
+        }
+
+        private static SyntaxNode GenerateReplacementNodeBasedOnValue(CastExpressionSyntax node, object desiredValue)
+        {
+            var typeToken = node.Type.GetFirstToken();
+            var correspondingSuffix = LiteralSyntaxKindToSuffix[typeToken.Kind()];
+            var fixedCodePreservingText = SyntaxFactory.ParseExpression(desiredValue + correspondingSuffix);
+
+            return fixedCodePreservingText.WithTriviaFrom(node);
         }
 
         private static string StripLiteralSuffix(string literal)
