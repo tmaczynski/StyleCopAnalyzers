@@ -124,7 +124,7 @@ namespace StyleCop.Analyzers.ReadabilityRules
 
             if (!context.SemanticModel.GetConstantValue(context.Node).HasValue)
             {
-                // cast does not have a valid value - e.g. (ulong)-1
+                // cast does not have a valid value - e.g. (ulong)-1 which is reported as error
                 return;
             }
 
