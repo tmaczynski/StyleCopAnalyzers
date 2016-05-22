@@ -292,8 +292,12 @@ class ClassName
 }}
 ";
 
-            // TODO: verify diagnostic ignoring CS0221 error
-            // await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
+            // TODO: refactor this code to make it more robust
+            DiagnosticResult[] expectedDiagnosticResult =
+            {
+                new DiagnosticResult(new DiagnosticDescriptor("CS0221", (string)null, "Constant value '-1' cannot be converted to a 'ulong' (use 'unchecked' syntax to override)", string.Empty, DiagnosticSeverity.Error, true, null, null)).WithLocation(6, 17)
+            };
+            await this.VerifyCSharpDiagnosticAsync(testCode, expectedDiagnosticResult, CancellationToken.None).ConfigureAwait(false);
         }
 
         /// <summary>
