@@ -276,18 +276,19 @@ class ClassName
         /// <summary>
         /// Verifies that diagnostics is not produced when error CS0221 raported.
         /// </summary>
-        /// <param name="castExpression">A cast that triggers CS0221</param>
+        /// <param name="type">A type that a literal is casted on</param>
+        /// <param name="castedLiteral">A literal that is casted</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Theory]
-        [InlineData("(ulong)-1")]
-        public async Task TestCodeTriggeringCS0221ShouldNotTriggerDiagnosticAsync(string castExpression)
+        [InlineData("ulong", "-1")]
+        public async Task TestCodeTriggeringCS0221ShouldNotTriggerDiagnosticAsync(string type, string castedLiteral)
         {
             var testCode = $@"
 class ClassName
 {{
     public void Method()
     {{
-        var x = {castExpression};
+        var x = ({type}){castedLiteral};
     }}
 }}
 ";
@@ -298,7 +299,7 @@ class ClassName
                 {
                     Id = "CS0221",
                     Severity = DiagnosticSeverity.Error,
-                    Message = "Constant value '-1' cannot be converted to a 'ulong' (use 'unchecked' syntax to override)",
+                    Message = $"Constant value '{castedLiteral}' cannot be converted to a '{type}' (use 'unchecked' syntax to override)",
                     Locations = new[] { new DiagnosticResultLocation("Test0.cs", 6, 17) }
                 }
             };
