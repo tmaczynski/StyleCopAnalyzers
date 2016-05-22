@@ -292,10 +292,15 @@ class ClassName
 }}
 ";
 
-            // TODO: refactor this code to make it more robust
             DiagnosticResult[] expectedDiagnosticResult =
             {
-                new DiagnosticResult(new DiagnosticDescriptor("CS0221", (string)null, "Constant value '-1' cannot be converted to a 'ulong' (use 'unchecked' syntax to override)", string.Empty, DiagnosticSeverity.Error, true, null, null)).WithLocation(6, 17)
+                new DiagnosticResult()
+                {
+                    Id = "CS0221",
+                    Severity = DiagnosticSeverity.Error,
+                    Message = "Constant value '-1' cannot be converted to a 'ulong' (use 'unchecked' syntax to override)",
+                    Locations = new[] { new DiagnosticResultLocation("Test0.cs", 6, 17) }
+                }
             };
             await this.VerifyCSharpDiagnosticAsync(testCode, expectedDiagnosticResult, CancellationToken.None).ConfigureAwait(false);
         }
