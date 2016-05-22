@@ -281,7 +281,7 @@ class ClassName
         }
 
         [Theory]
-        [InlineData("(ulong)-1L", "18446744073709551615L")]
+        [InlineData("(ulong)-1L", "18446744073709551615UL")]
         public async Task TestCastsInUncheckedEnviromentShouldTriggerDiagnosticAsync(string castExpression, string literal)
         {
             var testCode = $@"
