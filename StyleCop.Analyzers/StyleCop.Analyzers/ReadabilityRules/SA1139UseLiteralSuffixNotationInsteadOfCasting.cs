@@ -124,7 +124,7 @@ namespace StyleCop.Analyzers.ReadabilityRules
 
             if (!context.SemanticModel.GetConstantValue(context.Node).HasValue)
             {
-                // cast does not have a valid value - e.g. (ulong)-1 which is reported as error
+                // cast does not have a valid value (like "(ulong)-1") which is reported as error
                 return;
             }
 
@@ -133,11 +133,11 @@ namespace StyleCop.Analyzers.ReadabilityRules
 
         private static SyntaxKind GetCorrespondingSyntaxKind(LiteralExpressionSyntax literalExprssionSyntax)
         {
-            var tokenText = literalExprssionSyntax.Token.Text;
-            int suffixStartIndex = tokenText.IndexOfAny(LettersAllowedInLiteralSuffix);
-            var suffix = suffixStartIndex == -1 ?
+            var literalText = literalExprssionSyntax.Token.Text;
+            int literalSuffixStartIndex = literalText.IndexOfAny(LettersAllowedInLiteralSuffix);
+            var suffix = literalSuffixStartIndex == -1 ?
                 string.Empty :
-                tokenText.Substring(suffixStartIndex, tokenText.Length - suffixStartIndex);
+                literalText.Substring(literalSuffixStartIndex, length: literalText.Length - literalSuffixStartIndex);
             return GetLiteralSyntaxKindBySuffix(suffix);
         }
 
