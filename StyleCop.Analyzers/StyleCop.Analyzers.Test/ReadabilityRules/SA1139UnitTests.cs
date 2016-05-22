@@ -19,6 +19,11 @@ namespace StyleCop.Analyzers.Test.ReadabilityRules
     using TestHelper;
     using Xunit;
 
+    /// <summary>
+    /// This class contains unit tests for SA1139.
+    /// </summary>
+    /// <seealso cref="SA1139UseLiteralSuffixNotationInsteadOfCasting" />
+    /// <seealso cref="SA1139CodeFixProvider"/>
     public class SA1139UnitTests : CodeFixVerifier
     {
         /// <summary>
@@ -244,10 +249,16 @@ class ClassName
             await this.VerifyCSharpFixAsync(testCode, fixedCode, cancellationToken: CancellationToken.None).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Verifies that other types of casts should not produces diagnostics.
+        /// </summary>
+        /// <param name="correctCastExpression">A legal cast that should not trigger diagnostic</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Theory]
         [InlineData("(long)~1")]
         [InlineData("(bool)true")]
         [InlineData("(bool)(false)")]
+        [InlineData("(long)~+1")]
         public async Task TestOtherTypesOfCastsShouldNotTriggerDiagnosticAsync(string correctCastExpression)
         {
             var testCode = $@"
@@ -280,9 +291,15 @@ class ClassName
             // await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Verifies that using casts in unchecked enviroment produces diagnostics with a correct codefix.
+        /// </summary>
+        /// <param name="castExpression">A cast which can be performend in unchecked enviroment</param>
+        /// <param name="correctLiteral">The corresponding literal with suffix</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Theory]
         [InlineData("(ulong)-1L", "18446744073709551615UL")]
-        public async Task TestCastsInUncheckedEnviromentShouldTriggerDiagnosticAsync(string castExpression, string literal)
+        public async Task TestCastsInUncheckedEnviromentShouldPreserveValueAsync(string castExpression, string correctLiteral)
         {
             var testCode = $@"
 class ClassName
@@ -303,7 +320,7 @@ class ClassName
     {{
         unchecked
         {{
-            var x = {literal};
+            var x = {correctLiteral};
         }}
     }}
 }}
