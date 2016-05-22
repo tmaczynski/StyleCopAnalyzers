@@ -297,6 +297,7 @@ class ClassName
         {{
             var x = {castExpression};
         }}
+        var y = unchecked({castExpression});
     }}
 }}
 ";
@@ -309,12 +310,14 @@ class ClassName
         {{
             var x = {correctLiteral};
         }}
+        var y = unchecked({correctLiteral});
     }}
 }}
 ";
             DiagnosticResult[] expectedDiagnosticResult =
             {
-                this.CSharpDiagnostic().WithLocation(8, 21)
+                this.CSharpDiagnostic().WithLocation(8, 21),
+                this.CSharpDiagnostic().WithLocation(10, 27)
             };
             await this.VerifyCSharpDiagnosticAsync(testCode, expectedDiagnosticResult, CancellationToken.None).ConfigureAwait(false);
             await this.VerifyCSharpFixAsync(testCode, fixedCode, cancellationToken: CancellationToken.None).ConfigureAwait(false);
