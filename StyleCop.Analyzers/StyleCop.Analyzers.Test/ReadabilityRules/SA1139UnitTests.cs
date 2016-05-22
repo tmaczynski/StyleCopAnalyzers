@@ -23,7 +23,7 @@ namespace StyleCop.Analyzers.Test.ReadabilityRules
     /// This class contains unit tests for SA1139.
     /// </summary>
     /// <seealso cref="SA1139UseLiteralSuffixNotationInsteadOfCasting" />
-    /// <seealso cref="SA1139CodeFixProvider"/>
+    /// <seealso cref="SA1139CodeFixProvider" />
     public class SA1139UnitTests : CodeFixVerifier
     {
         /// <summary>
@@ -272,7 +272,12 @@ class ClassName
 ";
             await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
         }
-        
+
+        /// <summary>
+        /// Verifies that diagnostics is not produced when error CS0221 raported.
+        /// </summary>
+        /// <param name="castExpression">A cast that triggers CS0221</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Theory]
         [InlineData("(ulong)-1")]
         public async Task TestCodeTriggeringCS0221ShouldNotTriggerDiagnosticAsync(string castExpression)
