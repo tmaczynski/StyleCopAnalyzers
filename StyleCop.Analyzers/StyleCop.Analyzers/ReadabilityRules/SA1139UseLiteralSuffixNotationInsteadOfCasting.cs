@@ -3,14 +3,13 @@
 
 /* Contributor: Tomasz Maczyński */
 
-using StyleCop.Analyzers.Helpers;
-
 namespace StyleCop.Analyzers.ReadabilityRules
 {
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
+    using StyleCop.Analyzers.Helpers;
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
@@ -89,12 +88,12 @@ namespace StyleCop.Analyzers.ReadabilityRules
                 if (unaryExpressionSyntax.Kind() != SyntaxKind.UnaryPlusExpression
                     && unaryExpressionSyntax.Kind() != SyntaxKind.UnaryMinusExpression)
                 {
+                    // don't raport diagnostic if bit operations are performed or if expression has side-effects (eg. "(long)++i")
                     return;
                 }
             }
 
-            var castedElementTypeSyntax =
-                unaryExpressionSyntax == null ?
+            var castedElementTypeSyntax = unaryExpressionSyntax == null ?
                 castExpressionSyntax.Expression as LiteralExpressionSyntax :
                 unaryExpressionSyntax.Operand as LiteralExpressionSyntax;
 
