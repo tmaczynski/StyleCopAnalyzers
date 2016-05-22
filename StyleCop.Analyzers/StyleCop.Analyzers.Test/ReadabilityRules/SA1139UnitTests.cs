@@ -30,7 +30,7 @@ namespace StyleCop.Analyzers.Test.ReadabilityRules
         /// Verifies that using literals does not produce diagnostic.
         /// </summary>
         /// <param name="literalType">The type which is checked.</param>
-        /// <param name="literalSuffix">The correpsonding literal's suffix.</param>
+        /// <param name="literalSuffix">The literal's suffix.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Theory]
         [InlineData("int", "")]
