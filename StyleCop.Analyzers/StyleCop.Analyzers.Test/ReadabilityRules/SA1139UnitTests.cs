@@ -27,12 +27,13 @@ namespace StyleCop.Analyzers.Test.ReadabilityRules
     public class SA1139UnitTests : CodeFixVerifier
     {
         /// <summary>
-        /// Verifies that using literal in a declaration of a class field does not produce diagnostic.
+        /// Verifies that using literals does not produce diagnostic.
         /// </summary>
         /// <param name="literalType">The type which is checked.</param>
         /// <param name="literalSuffix">The correpsonding literal's suffix.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Theory]
+        [InlineData("int", "")]
         [InlineData("long", "L")]
         [InlineData("long", "l")]
         [InlineData("ulong", "UL")]
@@ -53,36 +54,7 @@ namespace StyleCop.Analyzers.Test.ReadabilityRules
 class ClassName
 {{
     {literalType} x = 1{literalSuffix};
-}}
-";
-            await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
-        }
 
-        /// <summary>
-        /// Verifies that using literals in a method body does not produce diagnostic.
-        /// </summary>
-        /// <param name="literalSuffix">Literal's suffix.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Theory]
-        [InlineData("L")]
-        [InlineData("l")]
-        [InlineData("UL")]
-        [InlineData("Ul")]
-        [InlineData("uL")]
-        [InlineData("ul")]
-        [InlineData("U")]
-        [InlineData("u")]
-        [InlineData("F")]
-        [InlineData("f")]
-        [InlineData("D")]
-        [InlineData("d")]
-        [InlineData("M")]
-        [InlineData("m")]
-        public async Task TestUsingLiteralsInMethodDoesNotProduceDiagnosticAsync(string literalSuffix)
-        {
-            var testCode = $@"
-class ClassName
-{{
     public void Method()
     {{
         var x = 1{literalSuffix};
