@@ -88,7 +88,7 @@ namespace StyleCop.Analyzers.ReadabilityRules
                 if (unaryExpressionSyntax.Kind() != SyntaxKind.UnaryPlusExpression
                     && unaryExpressionSyntax.Kind() != SyntaxKind.UnaryMinusExpression)
                 {
-                    // don't raport diagnostic if bit operations are performed or if expression has side-effects (eg. "(long)++i")
+                    // don't raport diagnostic if bit operations are performed and for some invalid code (eg. "(long)++1")
                     return;
                 }
             }
