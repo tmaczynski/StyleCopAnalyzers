@@ -68,35 +68,36 @@ class ClassName
         /// Verifies that using casts produces diagnostic and correct code fix.
         /// </summary>
         /// <param name="literalType">The type which is checked.</param>
-        /// <param name="literalSuffix">The suffix corresponding to the type</param>
-        /// <param name="sign">The sign of a number ("+", "-" or string.Empty)</param>
+        /// <param name="castedLiteral">The literal that is casted.</param>
+        /// <param name="correctLiteral">A literal representing result of a cast.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Theory]
-        [InlineData("long", "L", "")]
-        [InlineData("long", "L", "+")]
-        [InlineData("long", "L", "-")]
-        [InlineData("ulong", "UL", "")]
-        [InlineData("ulong", "UL", "+")]
-        [InlineData("uint", "U", "")]
-        [InlineData("float", "F", "")]
-        [InlineData("float", "F", "+")]
-        [InlineData("float", "F", "-")]
-        [InlineData("double", "D", "")]
-        [InlineData("double", "D", "+")]
-        [InlineData("double", "D", "-")]
-        [InlineData("decimal", "M", "")]
-        [InlineData("decimal", "M", "+")]
-        [InlineData("decimal", "M", "-")]
-        public async Task TestUsingCastsProducesDiagnosticAndCorrectCodefixAsync(string literalType, string literalSuffix, string sign)
+        [InlineData("long", "1", "1L")]
+        [InlineData("long", "+1", "+1L")]
+        [InlineData("long", "-1", "-1L")]
+        [InlineData("ulong", "1", "1UL")]
+        [InlineData("ulong", "+1", "+1UL")]
+        [InlineData("uint", "1", "1U")]
+        [InlineData("uint", "+1", "+1U")]
+        [InlineData("float", "1", "1F")]
+        [InlineData("float", "+1", "+1F")]
+        [InlineData("float", "-1", "-1F")]
+        [InlineData("double", "1", "1D")]
+        [InlineData("double", "+1", "+1D")]
+        [InlineData("double", "-1", "-1D")]
+        [InlineData("decimal", "1", "1M")]
+        [InlineData("decimal", "+1", "+1M")]
+        [InlineData("decimal", "-1", "-1M")]
+        public async Task TestUsingCastsProducesDiagnosticAndCorrectCodefixAsync(string literalType, string castedLiteral, string correctLiteral)
         {
             var testCode = $@"
 class ClassName
 {{
-    {literalType} x = ({literalType}){sign}1;
+    {literalType} x = ({literalType}){castedLiteral};
 
     public void Method()
     {{
-        var x = ({literalType}){sign}1;
+        var y = ({literalType}){castedLiteral};
     }}
 }}
 ";
@@ -104,11 +105,11 @@ class ClassName
             var fixedCode = $@"
 class ClassName
 {{
-    {literalType} x = {sign}1{literalSuffix};
+    {literalType} x = {correctLiteral};
 
     public void Method()
     {{
-        var x = {sign}1{literalSuffix};
+        var y = {correctLiteral};
     }}
 }}
 ";
