@@ -91,6 +91,7 @@ class ClassName
         [InlineData("decimal", "+1", "+1M")]
         [InlineData("decimal", "-1", "-1M")]
         [InlineData("ulong", "1L", "1UL")]
+        [InlineData("ulong", "+1L", "+1UL")]
         [InlineData("ulong", "1l", "1UL")]
         [InlineData("ulong", "1U", "1UL")]
         [InlineData("ulong", "1u", "1UL")]
@@ -225,6 +226,9 @@ class ClassName
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Theory]
         [InlineData("(ulong)-1L", "18446744073709551615UL")]
+        [InlineData("(int)1000000000000000000L", "-1486618624")]
+        [InlineData("(int)0xFFFFFFFFFFFFFFFFL", "-1")]
+        [InlineData("(uint)0xFFFFFFFFFFFFFFFFL", "4294967295")]
         public async Task TestCastsInUncheckedEnviromentShouldPreserveValueAsync(string castExpression, string correctLiteral)
         {
             var testCode = $@"
