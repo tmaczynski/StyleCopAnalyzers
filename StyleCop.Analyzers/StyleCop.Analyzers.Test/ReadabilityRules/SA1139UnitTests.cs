@@ -90,6 +90,10 @@ class ClassName
         [InlineData("decimal", "1", "1M")]
         [InlineData("decimal", "+1", "+1M")]
         [InlineData("decimal", "-1", "-1M")]
+        [InlineData("ulong", "1L", "1UL")]
+        [InlineData("ulong", "1l", "1UL")]
+        [InlineData("ulong", "1U", "1UL")]
+        [InlineData("ulong", "1u", "1UL")]
         public async Task TestUsingCastsProducesDiagnosticAndCorrectCodefixAsync(string literalType, string castedLiteral, string correctLiteral)
         {
             var testCode = $@"
@@ -97,9 +101,10 @@ class ClassName
 {{
     {literalType} x = ({literalType}){castedLiteral};
 
-    public void Method()
+    public object Method()
     {{
         var y = ({literalType}){castedLiteral};
+        return y;
     }}
 }}
 ";
@@ -109,9 +114,10 @@ class ClassName
 {{
     {literalType} x = {correctLiteral};
 
-    public void Method()
+    public object Method()
     {{
         var y = {correctLiteral};
+        return y;
     }}
 }}
 ";
@@ -152,46 +158,6 @@ class ClassName
 }}
 ";
             await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Verifies that using casts for a literal with a suffix produces diagnostics with a correct codefix.
-        /// </summary>
-        /// <param name="wrongLiteralWithCast">The literal with a suffix and a cast</param>
-        /// <param name="correctLiteral">The corresponding literal with suffix</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Theory]
-        [InlineData("(ulong)1L", "1UL")]
-        [InlineData("(ulong)1l", "1UL")]
-        [InlineData("(ulong)1U", "1UL")]
-        [InlineData("(ulong)1u", "1UL")]
-        public async Task TestUsingCastsOnLiteralsWithSuffixInMethodProducesDiagnosticAndCorrectCodefixAsync(string wrongLiteralWithCast, string correctLiteral)
-        {
-            var testCode = $@"
-class ClassName
-{{
-    public void Method()
-    {{
-        var x = {wrongLiteralWithCast};
-    }}
-}}
-";
-
-            var fixedCode = $@"
-class ClassName
-{{
-    public void Method()
-    {{
-        var x = {correctLiteral};
-    }}
-}}
-";
-            DiagnosticResult[] expectedDiagnosticResult =
-            {
-                this.CSharpDiagnostic().WithLocation(6, 17)
-            };
-            await this.VerifyCSharpDiagnosticAsync(testCode, expectedDiagnosticResult, CancellationToken.None).ConfigureAwait(false);
-            await this.VerifyCSharpFixAsync(testCode, fixedCode, cancellationToken: CancellationToken.None).ConfigureAwait(false);
         }
 
         /// <summary>
