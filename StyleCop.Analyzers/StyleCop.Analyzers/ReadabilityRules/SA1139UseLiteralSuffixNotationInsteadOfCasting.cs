@@ -52,10 +52,14 @@ namespace StyleCop.Analyzers.ReadabilityRules
                 { "M", SyntaxKind.DecimalKeyword }
             };
 
-        private static readonly char[] LettersAllowedInLiteralSuffix = UppercaseLiteralSuffixToLiteralSyntax.Keys
-            .SelectMany(s => s.ToCharArray()).Distinct()
-            .SelectMany(c => new[] { char.ToLowerInvariant(c), c })
-            .ToArray();
+        private static readonly char[] LettersAllowedInLiteralSuffix =
+
+        {
+            return dict.Keys
+                    .SelectMany(s => s.ToCharArray()).Distinct()
+                    .SelectMany(c => new[] { char.ToLowerInvariant(c), c })
+                    .ToArray();
+        }
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
