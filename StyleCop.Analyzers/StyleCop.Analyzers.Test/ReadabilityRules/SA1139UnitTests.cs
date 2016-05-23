@@ -82,6 +82,8 @@ class ClassName
         [InlineData("float", "1", "1F")]
         [InlineData("float", "+1", "+1F")]
         [InlineData("float", "-1", "-1F")]
+        [InlineData("float", "1.0", "1.0F")]
+        [InlineData("float", "-1e-10", "-1e-10F")]
         [InlineData("double", "1", "1D")]
         [InlineData("double", "+1", "+1D")]
         [InlineData("double", "-1", "-1D")]
