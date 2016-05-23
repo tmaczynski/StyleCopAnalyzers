@@ -48,7 +48,7 @@ namespace StyleCop.Analyzers.Test.ReadabilityRules
         [InlineData("double", "d")]
         [InlineData("decimal", "M")]
         [InlineData("decimal", "m")]
-        public async Task TestUsingLiteralsAsClassFieldsDoesNotProduceDiagnosticAsync(string literalType, string literalSuffix)
+        public async Task TestUsingLiteralsDoesNotProduceDiagnosticAsync(string literalType, string literalSuffix)
         {
             var testCode = $@"
 class ClassName
