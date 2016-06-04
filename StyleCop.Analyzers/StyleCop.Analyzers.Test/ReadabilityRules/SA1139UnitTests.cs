@@ -228,7 +228,7 @@ class ClassName
         [InlineData("(ulong)-1L", "18446744073709551615UL")]
         [InlineData("(int)1000000000000000000L", "-1486618624")]
         [InlineData("(int)0xFFFFFFFFFFFFFFFFL", "-1")]
-        [InlineData("(uint)0xFFFFFFFFFFFFFFFFL", "4294967295")]
+        [InlineData("(uint)0xFFFFFFFFFFFFFFFFL", "4294967295U")]
         public async Task TestCastsInUncheckedEnviromentShouldPreserveValueAsync(string castExpression, string correctLiteral)
         {
             var testCode = $@"
