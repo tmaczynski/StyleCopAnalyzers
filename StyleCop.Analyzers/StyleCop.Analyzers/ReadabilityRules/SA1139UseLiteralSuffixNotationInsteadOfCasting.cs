@@ -41,19 +41,34 @@ namespace StyleCop.Analyzers.ReadabilityRules
         private static readonly Action<SyntaxNodeAnalysisContext> GenericNameAction = HandleGenericName;
 
         // TODO: remove code duplication
-        private static readonly Dictionary<string, SyntaxKind> UppercaseLiteralSuffixToLiteralSyntax = new Dictionary<string, SyntaxKind>()
+        private static readonly IDictionary<string, SyntaxKind> UppercaseIntegerLiteralSuffixToLiteralSyntaxKind = new Dictionary<string, SyntaxKind>()
             {
                 { string.Empty, SyntaxKind.IntKeyword },
                 { "L", SyntaxKind.LongKeyword },
                 { "UL", SyntaxKind.ULongKeyword },
                 { "U", SyntaxKind.UIntKeyword },
+                { "D", SyntaxKind.DoubleKeyword },
+            };
+
+        private static readonly IDictionary<string, SyntaxKind> UppercaseRealLiteralSuffixToLiteralSyntaxKind = new Dictionary<string, SyntaxKind>()
+            {
                 { "F", SyntaxKind.FloatKeyword },
                 { "D", SyntaxKind.DoubleKeyword },
                 { "M", SyntaxKind.DecimalKeyword }
             };
 
-        private static readonly char[] LettersAllowedInLiteralSuffix =
+        private static readonly char[] LettersAllowedInIntegerLiteralSuffix =
+            GetCharsFromKeysLowerAndUpperCase(UppercaseIntegerLiteralSuffixToLiteralSyntaxKind);
 
+        private static readonly char[] LettersAllowedInRealLiteralSuffix =
+            GetCharsFromKeysLowerAndUpperCase(UppercaseRealLiteralSuffixToLiteralSyntaxKind);
+
+        private static readonly RegexOptions LiteralRegexOptions = RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;
+        private static readonly Regex IntegerBase10Regex = new Regex("^([0-9]*)(|u|l|ul)$", LiteralRegexOptions, Regex.InfiniteMatchTimeout);
+        private static readonly Regex IntegerBase16Regex = new Regex("^(0x)([0123456789abcdef]*)(|u|l|ul)$", LiteralRegexOptions, Regex.InfiniteMatchTimeout);
+        private static readonly Regex RealRegex = new Regex("^([0-9]*)(m|f|d)|([0-9]*)[.[0-9]*[e[0-9{1,2}]]([|m|f|d])]$", LiteralRegexOptions, Regex.InfiniteMatchTimeout);
+
+        private static char[] GetCharsFromKeysLowerAndUpperCase(IDictionary<string, SyntaxKind> dict)
         {
             return dict.Keys
                     .SelectMany(s => s.ToCharArray()).Distinct()
@@ -137,16 +152,38 @@ namespace StyleCop.Analyzers.ReadabilityRules
         private static SyntaxKind GetCorrespondingSyntaxKind(LiteralExpressionSyntax literalExprssionSyntax)
         {
             var literalText = literalExprssionSyntax.Token.Text;
-            int literalSuffixStartIndex = literalText.IndexOfAny(LettersAllowedInLiteralSuffix);
-            var suffix = literalSuffixStartIndex == -1 ?
+            int suffixStartIndex = -1;
+            if (IsIntegerLiteral(literalExprssionSyntax.Token.Text))
+            {
+                suffixStartIndex = literalText.IndexOfAny(LettersAllowedInIntegerLiteralSuffix);
+            }
+            else if (IsRealLiteral(literalExprssionSyntax.Token.Text))
+            {
+                suffixStartIndex = literalText.IndexOfAny(LettersAllowedInRealLiteralSuffix);
+            }
+
+            var suffix = suffixStartIndex == -1 ?
                 string.Empty :
-                literalText.Substring(literalSuffixStartIndex, length: literalText.Length - literalSuffixStartIndex);
+                literalText.Substring(suffixStartIndex, length: literalText.Length - suffixStartIndex);
             return GetLiteralSyntaxKindBySuffix(suffix);
         }
 
         private static SyntaxKind GetLiteralSyntaxKindBySuffix(string suffix)
         {
-            return UppercaseLiteralSuffixToLiteralSyntax[suffix.ToUpperInvariant()];
+            var upperCaseSuffix = suffix.ToUpperInvariant();
+            SyntaxKind syntaxKind;
+            if (UppercaseIntegerLiteralSuffixToLiteralSyntaxKind.TryGetValue(upperCaseSuffix, out syntaxKind))
+            {
+                return syntaxKind;
+            }
+
+            return UppercaseRealLiteralSuffixToLiteralSyntaxKind[upperCaseSuffix];
         }
+
+        private static bool IsIntegerLiteral(string literal) =>
+            IntegerBase10Regex.IsMatch(literal) || IntegerBase16Regex.IsMatch(literal);
+
+        private static bool IsRealLiteral(string literal) =>
+            RealRegex.IsMatch(literal);
     }
 }
