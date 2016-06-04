@@ -70,14 +70,6 @@ namespace StyleCop.Analyzers.ReadabilityRules
         private static readonly Regex IntegerBase16Regex = new Regex("^(0x)([0123456789abcdef]*)(|u|l|ul)$", LiteralRegexOptions, Regex.InfiniteMatchTimeout);
         private static readonly Regex RealRegex = new Regex("^([0-9]*)(m|f|d)|([0-9]*)[.[0-9]*[e[0-9{1,2}]]([|m|f|d])]$", LiteralRegexOptions, Regex.InfiniteMatchTimeout);
 
-        private static char[] GetCharsFromKeysLowerAndUpperCase(IDictionary<string, SyntaxKind> dict)
-        {
-            return dict.Keys
-                    .SelectMany(s => s.ToCharArray()).Distinct()
-                    .SelectMany(c => new[] { char.ToLowerInvariant(c), char.ToUpper(c) })
-                    .ToArray();
-        }
-
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
             ImmutableArray.Create(Descriptor);
@@ -186,5 +178,13 @@ namespace StyleCop.Analyzers.ReadabilityRules
 
         private static bool IsRealLiteral(string literal) =>
             RealRegex.IsMatch(literal);
+
+        private static char[] GetCharsFromKeysLowerAndUpperCase(IDictionary<string, SyntaxKind> dict)
+        {
+            return dict.Keys
+                    .SelectMany(s => s.ToCharArray()).Distinct()
+                    .SelectMany(c => new[] { char.ToLowerInvariant(c), char.ToUpper(c) })
+                    .ToArray();
+        }
     }
 }
