@@ -91,7 +91,7 @@ namespace StyleCop.Analyzers.ReadabilityRules
                 return;
             }
 
-            if (LiteralExpressionHelpers.GetCorrespondingSyntaxKind(castedElementTypeSyntax) == syntaxKindKeyword)
+            if (castedElementTypeSyntax.GetCorrespondingSyntaxKind() == syntaxKindKeyword)
             {
                 // cast is redundant which is reported by another diagnostic.
                 return;
