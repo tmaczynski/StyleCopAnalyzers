@@ -207,13 +207,9 @@ class ClassName
 
             DiagnosticResult[] expectedDiagnosticResult =
             {
-                new DiagnosticResult()
-                {
-                    Id = "CS0221",
-                    Severity = DiagnosticSeverity.Error,
-                    Message = $"Constant value '{castedLiteral}' cannot be converted to a '{type}' (use 'unchecked' syntax to override)",
-                    Locations = new[] { new DiagnosticResultLocation("Test0.cs", 6, 17) }
-                }
+                this.CSharpCompilerError("CS0221")
+                    .WithMessage($"Constant value '{castedLiteral}' cannot be converted to a '{type}' (use 'unchecked' syntax to override)")
+                    .WithLocation(6, 17)
             };
             await this.VerifyCSharpDiagnosticAsync(testCode, expectedDiagnosticResult, CancellationToken.None).ConfigureAwait(false);
         }
