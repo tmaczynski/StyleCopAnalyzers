@@ -37,6 +37,9 @@ namespace StyleCop.Analyzers.Helpers
         private static readonly char[] LettersAllowedInRealLiteralSuffix =
             GetCharsFromKeysLowerAndUpperCase(RealLiteralSuffixToLiteralSyntaxKind);
 
+        private static readonly char[] LettersAllowedInLiteralSuffix =
+            LettersAllowedInIntegerLiteralSuffix.Concat(LettersAllowedInRealLiteralSuffix).ToArray();
+
         private static readonly RegexOptions LiteralRegexOptions = RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;
         private static readonly Regex IntegerBase10Regex = new Regex("^([0-9]*)(|u|l|ul)$", LiteralRegexOptions, Regex.InfiniteMatchTimeout);
         private static readonly Regex IntegerBase16Regex = new Regex("^(0x)([0123456789abcdef]*)(|u|l|ul)$", LiteralRegexOptions, Regex.InfiniteMatchTimeout);
@@ -81,6 +84,12 @@ namespace StyleCop.Analyzers.Helpers
 
         private static bool IsRealLiteral(string literal) =>
             RealRegex.IsMatch(literal);
+
+        internal static string StripLiteralSuffix(string literal)
+        {
+            int suffixStartIndex = literal.IndexOfAny(LettersAllowedInLiteralSuffix);
+            return suffixStartIndex == -1 ? literal : literal.Substring(0, suffixStartIndex);
+        }
 
         private static char[] GetCharsFromKeysLowerAndUpperCase(IDictionary<string, SyntaxKind> dict)
         {

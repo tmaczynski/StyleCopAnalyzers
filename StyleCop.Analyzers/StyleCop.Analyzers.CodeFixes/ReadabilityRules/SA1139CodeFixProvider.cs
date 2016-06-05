@@ -108,7 +108,7 @@ namespace StyleCop.Analyzers.ReadabilityRules
             var prefix = plusMinusSyntax == null
                 ? string.Empty
                 : plusMinusSyntax.OperatorToken.Text;
-            var literalWithoutSuffix = StripLiteralSuffix(literalExpressionSyntax.Token.Text);
+            var literalWithoutSuffix = LiteralExpressionHelpers.StripLiteralSuffix(literalExpressionSyntax.Token.Text);
             var correspondingSuffix = LiteralSyntaxKindToSuffix[typeToken.Kind()];
             var fixedCodePreservingText = SyntaxFactory.ParseExpression(prefix + literalWithoutSuffix + correspondingSuffix);
 
@@ -122,12 +122,6 @@ namespace StyleCop.Analyzers.ReadabilityRules
             var fixedCodePreservingText = SyntaxFactory.ParseExpression(desiredValue + correspondingSuffix);
 
             return fixedCodePreservingText.WithTriviaFrom(node);
-        }
-
-        private static string StripLiteralSuffix(string literal)
-        {
-            int suffixStartIndex = literal.IndexOfAny(LettersAllowedInLiteralSuffix);
-            return suffixStartIndex == -1 ? literal : literal.Substring(0, suffixStartIndex);
         }
     }
 }
