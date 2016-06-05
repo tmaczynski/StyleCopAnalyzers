@@ -64,6 +64,12 @@ namespace StyleCop.Analyzers.Helpers
             return GetLiteralSyntaxKindBySuffix(suffix);
         }
 
+        internal static string StripLiteralSuffix(string literal)
+        {
+            int suffixStartIndex = literal.IndexOfAny(LettersAllowedInLiteralSuffix);
+            return suffixStartIndex == -1 ? literal : literal.Substring(0, suffixStartIndex);
+        }
+
         private static SyntaxKind GetLiteralSyntaxKindBySuffix(string suffix)
         {
             SyntaxKind syntaxKind;
@@ -84,12 +90,6 @@ namespace StyleCop.Analyzers.Helpers
 
         private static bool IsRealLiteral(string literal) =>
             RealRegex.IsMatch(literal);
-
-        internal static string StripLiteralSuffix(string literal)
-        {
-            int suffixStartIndex = literal.IndexOfAny(LettersAllowedInLiteralSuffix);
-            return suffixStartIndex == -1 ? literal : literal.Substring(0, suffixStartIndex);
-        }
 
         private static char[] GetCharsFromKeysLowerAndUpperCase(IDictionary<string, SyntaxKind> dict)
         {
