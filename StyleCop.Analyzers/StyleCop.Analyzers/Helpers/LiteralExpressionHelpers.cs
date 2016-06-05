@@ -13,7 +13,7 @@ namespace StyleCop.Analyzers.Helpers
 
     internal static class LiteralExpressionHelpers
     {
-        internal static readonly IDictionary<string, SyntaxKind> IntegerLiteralSuffixToLiteralSyntaxKind =
+        private static readonly IDictionary<string, SyntaxKind> IntegerLiteralSuffixToLiteralSyntaxKind =
             new Dictionary<string, SyntaxKind>(StringComparer.OrdinalIgnoreCase)
             {
                 { string.Empty, SyntaxKind.IntKeyword },
@@ -23,7 +23,7 @@ namespace StyleCop.Analyzers.Helpers
                 { "D", SyntaxKind.DoubleKeyword },
             };
 
-        internal static readonly IDictionary<string, SyntaxKind> RealLiteralSuffixToLiteralSyntaxKind =
+        private static readonly IDictionary<string, SyntaxKind> RealLiteralSuffixToLiteralSyntaxKind =
             new Dictionary<string, SyntaxKind>(StringComparer.OrdinalIgnoreCase)
             {
                 { "F", SyntaxKind.FloatKeyword },
