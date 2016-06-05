@@ -49,11 +49,11 @@ namespace StyleCop.Analyzers.Helpers
         {
             var literalText = literalExprssionSyntax.Token.Text;
             int suffixStartIndex = -1;
-            if (IsIntegerLiteral(literalExprssionSyntax.Token.Text))
+            if (IsIntegerLiteral(literalText))
             {
                 suffixStartIndex = literalText.IndexOfAny(LettersAllowedInIntegerLiteralSuffix);
             }
-            else if (IsRealLiteral(literalExprssionSyntax.Token.Text))
+            else if (IsRealLiteral(literalText))
             {
                 suffixStartIndex = literalText.IndexOfAny(LettersAllowedInRealLiteralSuffix);
             }
