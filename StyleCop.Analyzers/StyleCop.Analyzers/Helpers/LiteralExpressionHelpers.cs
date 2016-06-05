@@ -64,8 +64,9 @@ namespace StyleCop.Analyzers.Helpers
             return GetLiteralSyntaxKindBySuffix(suffix);
         }
 
-        internal static string StripLiteralSuffix(string literal)
+        internal static string GetLiteralSuffix(LiteralExpressionSyntax literalExprssionSyntax)
         {
+            var literal = literalExprssionSyntax.Token.Text;
             int suffixStartIndex = literal.IndexOfAny(LettersAllowedInLiteralSuffix);
             return suffixStartIndex == -1 ? literal : literal.Substring(0, suffixStartIndex);
         }
