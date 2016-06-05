@@ -118,6 +118,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>HelpersResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\LiteralExpressionHelpers.cs" />
     <Compile Include="Helpers\LocationHelpers.cs" />
     <Compile Include="Helpers\MemberOrderHelper.cs" />
     <Compile Include="Helpers\NamedTypeHelpers.cs" />

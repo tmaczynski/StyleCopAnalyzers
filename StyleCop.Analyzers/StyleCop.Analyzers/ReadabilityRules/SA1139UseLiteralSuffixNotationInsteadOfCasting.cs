@@ -29,46 +29,28 @@ namespace StyleCop.Analyzers.ReadabilityRules
         /// </summary>
         public const string DiagnosticId = "SA1139";
 
-        private static readonly LocalizableString Title = new LocalizableResourceString(nameof(ReadabilityResources.SA1139Title), ReadabilityResources.ResourceManager, typeof(ReadabilityResources));
-        private static readonly LocalizableString MessageFormat = new LocalizableResourceString(nameof(ReadabilityResources.SA1139MessageFormat), ReadabilityResources.ResourceManager, typeof(ReadabilityResources));
-        private static readonly LocalizableString Description = new LocalizableResourceString(nameof(ReadabilityResources.SA1139Description), ReadabilityResources.ResourceManager, typeof(ReadabilityResources));
-        private static readonly string HelpLink = "https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1139.md";
+        private static readonly LocalizableString Title =
+            new LocalizableResourceString(nameof(ReadabilityResources.SA1139Title), ReadabilityResources.ResourceManager,
+                typeof(ReadabilityResources));
+
+        private static readonly LocalizableString MessageFormat =
+            new LocalizableResourceString(nameof(ReadabilityResources.SA1139MessageFormat),
+                ReadabilityResources.ResourceManager, typeof(ReadabilityResources));
+
+        private static readonly LocalizableString Description =
+            new LocalizableResourceString(nameof(ReadabilityResources.SA1139Description),
+                ReadabilityResources.ResourceManager, typeof(ReadabilityResources));
+
+        private static readonly string HelpLink =
+            "https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1139.md";
 
         private static readonly DiagnosticDescriptor Descriptor =
-            new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, AnalyzerCategory.ReadabilityRules, DiagnosticSeverity.Warning, AnalyzerConstants.EnabledByDefault, Description, HelpLink);
+            new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, AnalyzerCategory.ReadabilityRules,
+                DiagnosticSeverity.Warning, AnalyzerConstants.EnabledByDefault, Description, HelpLink);
 
         private static readonly Action<CompilationStartAnalysisContext> CompilationStartAction = HandleCompilationStart;
         private static readonly Action<SyntaxNodeAnalysisContext> GenericNameAction = HandleGenericName;
 
-        // TODO: remove code duplication
-        private static readonly IDictionary<string, SyntaxKind> IntegerLiteralSuffixToLiteralSyntaxKind = 
-            new Dictionary<string, SyntaxKind>(StringComparer.OrdinalIgnoreCase)
-            {
-                { string.Empty, SyntaxKind.IntKeyword },
-                { "L", SyntaxKind.LongKeyword },
-                { "UL", SyntaxKind.ULongKeyword },
-                { "U", SyntaxKind.UIntKeyword },
-                { "D", SyntaxKind.DoubleKeyword },
-            };
-
-        private static readonly IDictionary<string, SyntaxKind> RealLiteralSuffixToLiteralSyntaxKind =
-            new Dictionary<string, SyntaxKind>(StringComparer.OrdinalIgnoreCase)
-            {
-                { "F", SyntaxKind.FloatKeyword },
-                { "D", SyntaxKind.DoubleKeyword },
-                { "M", SyntaxKind.DecimalKeyword }
-            };
-
-        private static readonly char[] LettersAllowedInIntegerLiteralSuffix =
-            GetCharsFromKeysLowerAndUpperCase(IntegerLiteralSuffixToLiteralSyntaxKind);
-
-        private static readonly char[] LettersAllowedInRealLiteralSuffix =
-            GetCharsFromKeysLowerAndUpperCase(RealLiteralSuffixToLiteralSyntaxKind);
-
-        private static readonly RegexOptions LiteralRegexOptions = RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;
-        private static readonly Regex IntegerBase10Regex = new Regex("^([0-9]*)(|u|l|ul)$", LiteralRegexOptions, Regex.InfiniteMatchTimeout);
-        private static readonly Regex IntegerBase16Regex = new Regex("^(0x)([0123456789abcdef]*)(|u|l|ul)$", LiteralRegexOptions, Regex.InfiniteMatchTimeout);
-        private static readonly Regex RealRegex = new Regex("^([0-9]*)(m|f|d)|([0-9]*)[.[0-9]*[e[0-9{1,2}]]([|m|f|d])]$", LiteralRegexOptions, Regex.InfiniteMatchTimeout);
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
@@ -87,7 +69,7 @@ namespace StyleCop.Analyzers.ReadabilityRules
 
         private static void HandleGenericName(SyntaxNodeAnalysisContext context)
         {
-            var castExpressionSyntax = (CastExpressionSyntax)context.Node;
+            var castExpressionSyntax = (CastExpressionSyntax) context.Node;
 
             var castingToTypeSyntax = castExpressionSyntax.Type as PredefinedTypeSyntax;
             if (castingToTypeSyntax == null)
@@ -106,9 +88,9 @@ namespace StyleCop.Analyzers.ReadabilityRules
                 }
             }
 
-            var castedElementTypeSyntax = unaryExpressionSyntax == null ?
-                castExpressionSyntax.Expression as LiteralExpressionSyntax :
-                unaryExpressionSyntax.Operand as LiteralExpressionSyntax;
+            var castedElementTypeSyntax = unaryExpressionSyntax == null
+                ? castExpressionSyntax.Expression as LiteralExpressionSyntax
+                : unaryExpressionSyntax.Operand as LiteralExpressionSyntax;
 
             if (castedElementTypeSyntax == null)
             {
@@ -128,7 +110,7 @@ namespace StyleCop.Analyzers.ReadabilityRules
                 return;
             }
 
-            if (GetCorrespondingSyntaxKind(castedElementTypeSyntax) == syntaxKindKeyword)
+            if (LiteralExpressionHelpers.GetCorrespondingSyntaxKind(castedElementTypeSyntax) == syntaxKindKeyword)
             {
                 // cast is redundant which is reported by another diagnostic.
                 return;
@@ -141,54 +123,6 @@ namespace StyleCop.Analyzers.ReadabilityRules
             }
 
             context.ReportDiagnostic(Diagnostic.Create(Descriptor, castExpressionSyntax.GetLocation()));
-        }
-
-        private static SyntaxKind GetCorrespondingSyntaxKind(LiteralExpressionSyntax literalExprssionSyntax)
-        {
-            var literalText = literalExprssionSyntax.Token.Text;
-            int suffixStartIndex = -1;
-            if (IsIntegerLiteral(literalExprssionSyntax.Token.Text))
-            {
-                suffixStartIndex = literalText.IndexOfAny(LettersAllowedInIntegerLiteralSuffix);
-            }
-            else if (IsRealLiteral(literalExprssionSyntax.Token.Text))
-            {
-                suffixStartIndex = literalText.IndexOfAny(LettersAllowedInRealLiteralSuffix);
-            }
-
-            var suffix = suffixStartIndex == -1 ?
-                string.Empty :
-                literalText.Substring(suffixStartIndex, length: literalText.Length - suffixStartIndex);
-            return GetLiteralSyntaxKindBySuffix(suffix);
-        }
-
-        private static SyntaxKind GetLiteralSyntaxKindBySuffix(string suffix)
-        {
-            SyntaxKind syntaxKind;
-            if (IntegerLiteralSuffixToLiteralSyntaxKind.TryGetValue(suffix, out syntaxKind))
-            {
-                return syntaxKind;
-            }
-            else if (RealLiteralSuffixToLiteralSyntaxKind.TryGetValue(suffix, out syntaxKind))
-            {
-                return syntaxKind;
-            }
-
-            throw new ArgumentException($"There is no integer nor real numeric literal with suffix '{suffix}'.");
-        }
-
-        private static bool IsIntegerLiteral(string literal) =>
-            IntegerBase10Regex.IsMatch(literal) || IntegerBase16Regex.IsMatch(literal);
-
-        private static bool IsRealLiteral(string literal) =>
-            RealRegex.IsMatch(literal);
-
-        private static char[] GetCharsFromKeysLowerAndUpperCase(IDictionary<string, SyntaxKind> dict)
-        {
-            return dict.Keys
-                    .SelectMany(s => s.ToCharArray()).Distinct()
-                    .SelectMany(c => new[] { char.ToLowerInvariant(c), char.ToUpper(c) })
-                    .ToArray();
         }
     }
 }
