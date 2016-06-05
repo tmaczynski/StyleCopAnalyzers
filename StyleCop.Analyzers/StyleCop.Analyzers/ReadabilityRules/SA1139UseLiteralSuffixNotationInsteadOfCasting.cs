@@ -169,8 +169,12 @@ namespace StyleCop.Analyzers.ReadabilityRules
             {
                 return syntaxKind;
             }
+            else if (RealLiteralSuffixToLiteralSyntaxKind.TryGetValue(suffix, out syntaxKind))
+            {
+                return syntaxKind;
+            }
 
-            return RealLiteralSuffixToLiteralSyntaxKind[suffix];
+            throw new ArgumentException($"There is no integer nor real numeric literal with suffix '{suffix}'.");
         }
 
         private static bool IsIntegerLiteral(string literal) =>
