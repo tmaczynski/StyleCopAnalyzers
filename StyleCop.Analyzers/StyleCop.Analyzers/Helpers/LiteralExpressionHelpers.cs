@@ -39,9 +39,6 @@ namespace StyleCop.Analyzers.Helpers
         private static readonly char[] LettersAllowedInRealLiteralSuffix =
             GetCharsFromKeysLowerAndUpperCase(RealLiteralSuffixToLiteralSyntaxKind);
 
-        private static readonly char[] LettersAllowedInLiteralSuffix =
-            LettersAllowedInIntegerLiteralSuffix.Concat(LettersAllowedInRealLiteralSuffix).ToArray();
-
         private static readonly RegexOptions LiteralRegexOptions = RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;
         private static readonly Regex IntegerBase10Regex = new Regex("^([0-9]*)(|u|l|ul)$", LiteralRegexOptions, Regex.InfiniteMatchTimeout);
         private static readonly Regex IntegerBase16Regex = new Regex("^(0x)([0123456789abcdef]*)(|u|l|ul)$", LiteralRegexOptions, Regex.InfiniteMatchTimeout);
@@ -58,11 +55,11 @@ namespace StyleCop.Analyzers.Helpers
             return GetLiteralSyntaxKindBySuffix(suffix);
         }
 
-        internal static string GetLiteralSuffix(LiteralExpressionSyntax literalExprssionSyntax)
+        internal static string StripLiteralSuffix(this LiteralExpressionSyntax literalExpressionSyntax)
         {
-            var literal = literalExprssionSyntax.Token.Text;
-            int suffixStartIndex = literal.IndexOfAny(LettersAllowedInLiteralSuffix);
-            return suffixStartIndex == -1 ? literal : literal.Substring(0, suffixStartIndex);
+            var literalText = literalExpressionSyntax.Token.Text;
+            int suffixStartIndex = SuffixStartIndex(literalText);
+            return suffixStartIndex == -1 ? literalText : literalText.Substring(0, suffixStartIndex);
         }
 
         private static SyntaxKind GetLiteralSyntaxKindBySuffix(string suffix)
