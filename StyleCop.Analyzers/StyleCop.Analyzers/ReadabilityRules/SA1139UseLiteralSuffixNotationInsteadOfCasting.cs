@@ -5,18 +5,13 @@
 
 namespace StyleCop.Analyzers.ReadabilityRules
 {
+    using System;
+    using System.Collections.Immutable;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
     using StyleCop.Analyzers.Helpers;
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Linq;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A cast is performed instead of using literal of a number. Use "U" suffix to create 32-bit unsigned integer literal, "L" for 64-bit integer literal and "UL" for 64-bit unsigned integer literal.
