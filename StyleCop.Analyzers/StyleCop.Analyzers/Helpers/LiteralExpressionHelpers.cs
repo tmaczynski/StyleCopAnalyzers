@@ -48,15 +48,7 @@ namespace StyleCop.Analyzers.Helpers
         internal static SyntaxKind GetCorrespondingSyntaxKind(this LiteralExpressionSyntax literalExprssionSyntax)
         {
             var literalText = literalExprssionSyntax.Token.Text;
-            int suffixStartIndex = -1;
-            if (IsIntegerLiteral(literalText))
-            {
-                suffixStartIndex = literalText.IndexOfAny(LettersAllowedInIntegerLiteralSuffix);
-            }
-            else if (IsRealLiteral(literalText))
-            {
-                suffixStartIndex = literalText.IndexOfAny(LettersAllowedInRealLiteralSuffix);
-            }
+            var suffixStartIndex = SuffixStartIndex(literalText);
 
             var suffix = suffixStartIndex == -1 ?
                 string.Empty :
@@ -84,6 +76,21 @@ namespace StyleCop.Analyzers.Helpers
             }
 
             throw new ArgumentException($"There is no integer nor real numeric literal with suffix '{suffix}'.");
+        }
+
+        private static int SuffixStartIndex(string literalText)
+        {
+            int suffixStartIndex = -1;
+            if (IsIntegerLiteral(literalText))
+            {
+                suffixStartIndex = literalText.IndexOfAny(LettersAllowedInIntegerLiteralSuffix);
+            }
+            else if (IsRealLiteral(literalText))
+            {
+                suffixStartIndex = literalText.IndexOfAny(LettersAllowedInRealLiteralSuffix);
+            }
+
+            return suffixStartIndex;
         }
 
         private static bool IsIntegerLiteral(string literal) =>
