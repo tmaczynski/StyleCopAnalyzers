@@ -40,12 +40,14 @@ namespace StyleCop.Analyzers.ReadabilityRules
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+
             context.RegisterCompilationStartAction(CompilationStartAction);
         }
 
         private static void HandleCompilationStart(CompilationStartAnalysisContext context)
         {
-            context.RegisterSyntaxNodeActionHonorExclusions(GenericNameAction, SyntaxKind.CastExpression);
+            context.RegisterSyntaxNodeAction(GenericNameAction, SyntaxKind.CastExpression);
         }
 
         private static void HandleGenericName(SyntaxNodeAnalysisContext context)
