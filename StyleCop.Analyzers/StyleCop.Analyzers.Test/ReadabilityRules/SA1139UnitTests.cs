@@ -198,7 +198,7 @@ class ClassName
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Theory]
         [InlineData("ulong", "-1")]
-        public async Task TestCodeTriggeringCS0221ShouldNotTriggerDiagnosticAsync(string type, string castedLiteral)
+        public async Task TestCodeTriggeringCs0221ShouldNotTriggerDiagnosticAsync(string type, string castedLiteral)
         {
             var testCode = $@"
 class ClassName
