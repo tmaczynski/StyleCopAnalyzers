@@ -130,6 +130,12 @@ class ClassName
             await this.VerifyCSharpFixAsync(testCode, fixedCode, cancellationToken: CancellationToken.None).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Verifies that redundant cast does not trigger diagnostic.
+        /// </summary>
+        /// <param name="literal">A literal that is casted</param>
+        /// <param name="type">A type that literal is casted on</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Theory]
         [InlineData("1", "int")]
         [InlineData("1L", "long")]
