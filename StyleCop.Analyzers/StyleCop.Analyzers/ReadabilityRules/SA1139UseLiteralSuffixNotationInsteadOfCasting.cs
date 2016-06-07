@@ -14,7 +14,9 @@ namespace StyleCop.Analyzers.ReadabilityRules
     using StyleCop.Analyzers.Helpers;
 
     /// <summary>
-    /// A cast is performed instead of using literal of a number. Use "U" suffix to create 32-bit unsigned integer literal, "L" for 64-bit integer literal and "UL" for 64-bit unsigned integer literal.
+    /// A cast is performed instead of using literal of a number. Use "U" suffix to create 32-bit unsigned integer,
+    /// "L" for 64-bit integer, "UL" for 64-bit unsigned integer, "F" for 32-bit floating point number, "D" for 64-bit
+    /// floating point number, and "M" for a decimal number.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class SA1139UseLiteralSuffixNotationInsteadOfCasting : DiagnosticAnalyzer
@@ -41,7 +43,6 @@ namespace StyleCop.Analyzers.ReadabilityRules
         public override void Initialize(AnalysisContext context)
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-
             context.RegisterCompilationStartAction(CompilationStartAction);
         }
 
