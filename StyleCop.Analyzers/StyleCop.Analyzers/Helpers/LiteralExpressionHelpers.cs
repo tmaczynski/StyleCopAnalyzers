@@ -42,7 +42,7 @@ namespace StyleCop.Analyzers.Helpers
 
         private static readonly RegexOptions LiteralRegexOptions = RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;
         private static readonly Regex IntegerBase10Regex = new Regex("^([0-9]*)(|u|l|ul|lu)$", LiteralRegexOptions, Regex.InfiniteMatchTimeout);
-        private static readonly Regex IntegerBase16Regex = new Regex("^(0x)([0123456789abcdef]*)(|u|l|ul|lu)$", LiteralRegexOptions, Regex.InfiniteMatchTimeout);
+        private static readonly Regex IntegerBase16Regex = new Regex("^(0x)([0-9a-f]*)(|u|l|ul|lu)$", LiteralRegexOptions, Regex.InfiniteMatchTimeout);
         private static readonly Regex RealRegex = new Regex("^([0-9]*)(m|f|d)|([0-9]*)[.[0-9]*[e[0-9{1,2}]]([|m|f|d])]$", LiteralRegexOptions, Regex.InfiniteMatchTimeout);
 
         internal static SyntaxKind GetCorrespondingSyntaxKind(this LiteralExpressionSyntax literalExprssionSyntax)
